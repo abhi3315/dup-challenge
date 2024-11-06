@@ -1,10 +1,14 @@
 <?php
 
-namespace DupChallenge\Controllers;
+namespace DupChallenge\Abstracts;
 
-abstract class AbstractController
+abstract class BaseController
 {
-    /** @var static[] */
+	/**
+	 * Instances
+	 *
+	 * @var static[]
+	 */
     private static $instances = array();
 
     /**

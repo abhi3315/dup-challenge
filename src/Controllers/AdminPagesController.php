@@ -2,13 +2,14 @@
 
 namespace DupChallenge\Controllers;
 
+use DupChallenge\Abstracts\BaseController;
 use DupChallenge\Views\Main\MainPageView;
 use DupChallenge\Views\Settings\SettingsPageView;
 
 /**
  * Singleton class controller for admin pages
  */
-class AdminPagesController extends AbstractController
+class AdminPagesController extends BaseController
 {
     const MAIN_PAGE_SLUG = 'duplicator-challenge';
     const SETTINGS_PAGE_SLUG = 'duplicator-challenge-settings';

@@ -3,7 +3,7 @@
 namespace DupChallenge;
 
 use DupChallenge\Controllers\AdminPagesController;
-use DupChallenge\Controllers\ScannerController;
+use DupChallenge\Controllers\FileScannerController;
 
 class Bootstrap
 {
@@ -17,7 +17,7 @@ class Bootstrap
         Install::register();
         Unistall::register();
 
-		ScannerController::getController();
+		FileScannerController::getController();
 
         add_action('admin_init', [__CLASS__, 'hookAdminInit']);
         add_action('admin_menu', [__CLASS__, 'menuInit']);
