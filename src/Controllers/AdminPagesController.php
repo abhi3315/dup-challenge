@@ -2,24 +2,22 @@
 
 namespace DupChallenge\Controllers;
 
-use DupChallenge\Abstracts\BaseController;
+use DupChallenge\Traits\SingletonTrait;
+use DupChallenge\Interfaces\BaseControllerInterface;
 use DupChallenge\Views\Main\MainPageView;
 use DupChallenge\Views\Settings\SettingsPageView;
 
 /**
  * Singleton class controller for admin pages
  */
-class AdminPagesController extends BaseController
+class AdminPagesController implements BaseControllerInterface
 {
+
+	// Use trait to implement singleton pattern
+	use SingletonTrait;
+
     const MAIN_PAGE_SLUG = 'duplicator-challenge';
     const SETTINGS_PAGE_SLUG = 'duplicator-challenge-settings';
-
-    /**
-     * Class constructor
-     */
-    protected function __construct()
-    {
-    }
 
     /**
      * Add admin javascripts

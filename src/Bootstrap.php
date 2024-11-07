@@ -17,7 +17,7 @@ class Bootstrap
         Install::register();
         Unistall::register();
 
-		FileScannerController::getController();
+        FileScannerController::getInstance();
 
         add_action('admin_init', [__CLASS__, 'hookAdminInit']);
         add_action('admin_menu', [__CLASS__, 'menuInit']);
@@ -46,7 +46,7 @@ class Bootstrap
             __('Dup Challenge', 'dup-challenge'),
             'manage_options',
             AdminPagesController::MAIN_PAGE_SLUG,
-            [AdminPagesController::getController(), 'mainPageAction'],
+            [AdminPagesController::getInstance(), 'mainPageAction'],
             'dashicons-admin-generic',
             100
         );
@@ -57,7 +57,7 @@ class Bootstrap
             __('Settings', 'dup-challenge'),
             'manage_options',
             AdminPagesController::SETTINGS_PAGE_SLUG,
-            [AdminPagesController::getController(), 'settingsPageAction']
+            [AdminPagesController::getInstance(), 'settingsPageAction']
         );
     }
 }
