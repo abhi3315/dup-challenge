@@ -35,7 +35,7 @@ final class Autoloader
 
             $filepath = $mappedPath . str_replace('\\', '/', substr($className, strlen($namespace))) . '.php';
             if (file_exists($filepath)) {
-                include_once($filepath);
+                include_once $filepath;
                 return true;
             }
         }
@@ -52,7 +52,7 @@ final class Autoloader
     {
         // the order is important, it is necessary to insert the longest namespaces first
         return array(
-            self::ROOT_NAMESPACE           => DUP_CHALLENGE_PATH . '/src/'
+            self::ROOT_NAMESPACE => DUP_CHALLENGE_PATH . '/src/'
         );
     }
 }
