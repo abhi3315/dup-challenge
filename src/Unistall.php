@@ -31,7 +31,11 @@ class Unistall
     public static function deactivate()
     {
 		$tableController = TableController::getInstance();
-		$tableController->dropTable(FileSystemNodesTable::getInstance());
-		$tableController->dropTable(FileSystemClosureTable::getInstance());
+
+		/**
+		 * Drop closure table first as it has a foreign key constraint on nodes table
+		 */
+		$tableController->dropTable(FileSystemClosureTable::getInstance()->getName());
+		$tableController->dropTable(FileSystemNodesTable::getInstance()->getName());
     }
 }
