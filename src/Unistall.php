@@ -2,6 +2,10 @@
 
 namespace DupChallenge;
 
+use DupChallenge\Controllers\TableController;
+use DupChallenge\Controllers\Tables\FileSystemNodesTable;
+use DupChallenge\Controllers\Tables\FileSystemClosureTable;
+
 /**
  * Uninstall class
  */
@@ -26,5 +30,8 @@ class Unistall
      */
     public static function deactivate()
     {
+		$tableController = TableController::getInstance();
+		$tableController->dropTable(FileSystemNodesTable::getInstance());
+		$tableController->dropTable(FileSystemClosureTable::getInstance());
     }
 }
