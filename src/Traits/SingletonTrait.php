@@ -24,35 +24,50 @@ trait SingletonTrait
 
     /**
 	 * Get the singleton instance of the class.
+	 * 
+	 * @param bool $forceNew Force a new instance of the class
      *
-     * @return object Singleton instance of the class.
+     * @return self Singleton instance of the class.
      */
-    final public static function getInstance()
-    {
+    final public static function getInstance($forceNew = false, ...$dependencies)
+	{
+		if ($forceNew) {
+			return new static(...$dependencies);
+		}
 
-        /**
-         * Collection of instance.
-         *
-         * @var array
-         */
-        static $instance = [];
+		return static::singleton();
+	}
 
-        /**
+	/**
+	 * Get the singleton instance of the class.
+	 *
+	 * @return self Singleton instance of the class.
+	 */
+	private static function singleton()
+	{
+		/**
+		 * Collection of instance.
+		 *
+		 * @var array
+		 */
+		static $instance = [];
+
+		/**
 		 * Get the called class name.
-         */
-        $called_class = get_called_class();
+		 */
+		$called_class = get_called_class();
 
-        if (! isset($instance[ $called_class ]) ) {
+		if (! isset($instance[ $called_class ]) ) {
 
-            $instance[ $called_class ] = new $called_class();
+			$instance[ $called_class ] = new $called_class();
 
-            /**
-             * Dependent items can use the dup_challenge_singleton_init_{$called_class} hook to execute code
-             */
-            do_action(sprintf('dup_challenge_singleton_init_%s', $called_class));
+			/**
+			 * Dependent items can use the dup_challenge_singleton_init_{$called_class} hook to execute code
+			 */
+			do_action(sprintf('dup_challenge_singleton_init_%s', $called_class));
 
-        }
+		}
 
-        return $instance[ $called_class ];
-    }
+		return $instance[ $called_class ];
+	}
 }
