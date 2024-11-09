@@ -134,4 +134,65 @@ class TableController implements BaseControllerInterface
 
 		return false;
 	}
+
+	/**
+	 * Drop table
+	 * 
+	 * @param string $tableName
+	 * 
+	 * @return bool
+	 */
+	public function dropTable($tableName)
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare("DROP TABLE IF EXISTS %s", $tableName);
+
+		if ($wpdb->query($query) === false) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Insert data into table
+	 * 
+	 * @param string $tableName
+	 * @param array $data
+	 * 
+	 * @return bool|int
+	 */
+	public function insertData($tableName, $data)
+	{
+		global $wpdb;
+
+		$wpdb->insert($tableName, $data);
+
+		if ($wpdb->insert_id === 0) {
+			return false;
+		}
+
+		return $wpdb->insert_id;
+	}
+
+	/**
+	 * Truncate table
+	 * 
+	 * @param string $tableName
+	 * 
+	 * @return bool
+	 */
+	public function truncateTable($tableName)
+	{
+		global $wpdb;
+
+		$query = $wpdb->prepare("TRUNCATE TABLE %s", $tableName);
+
+		if ($wpdb->query($query) === false) {
+			return false;
+		}
+
+		return true;
+	}
 }
