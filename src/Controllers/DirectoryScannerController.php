@@ -73,7 +73,7 @@ class DirectoryScannerController implements ScannerInterface
         }
 
         if (!$this->cleanup()) {
-            error_log(__('Failed to cleanup tables', 'dup-challenge'));
+            $this->logError(__('Failed to cleanup tables', 'dup-challenge'));
             return;
         }
 
@@ -110,10 +110,7 @@ class DirectoryScannerController implements ScannerInterface
         }
 
         $this->queue->saveState();
-
-        if (!$this->queue->isEmpty()) {
-            wp_schedule_single_event(time() + $this->chunkProcessingGap, self::EVENT_NAME);
-        }
+		wp_schedule_single_event(time() + $this->chunkProcessingGap, self::EVENT_NAME);
     }
 
     /**
@@ -151,9 +148,8 @@ class DirectoryScannerController implements ScannerInterface
 
         // If the node was not inserted, re-enqueue the item
         if (!$nodeId) {
-            $item->decrementRetry();
-            $this->queue->enqueue($item);
-            error_log(sprintf(__('(%d) Retrying directory: %s', 'dup-challenge'), $item->getRetry(), $item->getPath()));
+            $this->requeueItem($item);
+            $this->logError(sprintf(__('Retrying (%d) directory: %s', 'dup-challenge'), $item->getRetry(), $item->getPath()));
         }
 
         $item->setRecordId($nodeId);
@@ -174,7 +170,7 @@ class DirectoryScannerController implements ScannerInterface
         foreach ($iterator as $child) {
             // Check if the child is readable
             if (!$child->isReadable()) {
-                error_log(sprintf(__('Skipping unreadable file: %s', 'dup-challenge'), $child->getPathname()));
+                $this->logError(sprintf(__('Skipping unreadable file: %s', 'dup-challenge'), $child->getPathname()));
                 continue;
             }
 
@@ -205,9 +201,8 @@ class DirectoryScannerController implements ScannerInterface
 
         // If the node was not inserted, re-enqueue the item
         if (!$nodeId) {
-            $item->decrementRetry();
-            $this->queue->enqueue($item);
-            error_log(sprintf(__('(%d) Retrying file: %s', 'dup-challenge'), $item->getRetry(), $item->getPath()));
+            $this->requeueItem($item);
+            $this->logError(sprintf(__('Retrying (%d) file: %s', 'dup-challenge'), $item->getRetry(), $item->getPath()));
         }
     }
 
@@ -227,11 +222,11 @@ class DirectoryScannerController implements ScannerInterface
 
         try {
             $data = [
-            FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
-            FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
-            FileSystemNodesTable::COLUMN_NODE_COUNT =>$item->isDir() ? 0 : 1, // Node count for directories will be updated after the scan
-            FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
-            FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified()
+				FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
+				FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
+				FileSystemNodesTable::COLUMN_NODE_COUNT => 1, // Node count for directories will be updated after the scan
+				FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
+				FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified()
             ];
 
             
@@ -252,7 +247,7 @@ class DirectoryScannerController implements ScannerInterface
         } catch (Exception $e) {
             // Rollback the transaction
             $wpdb->query('ROLLBACK');
-            error_log(sprintf(__('Insert node failed: ', 'dup-challenge'), $e->getMessage()));
+            $this->logError(sprintf(__('Insert node failed: ', 'dup-challenge'), $e->getMessage()));
             return 0;
         }
     }
@@ -281,10 +276,10 @@ class DirectoryScannerController implements ScannerInterface
 
             if($ancestorId && $decendantId) {
                 $this->tableController->insertData(
-                    FileSystemClosureTable::getInstance()->getName(), [
-                    FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
-                    FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
-                    FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
+						FileSystemClosureTable::getInstance()->getName(), [
+						FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
+						FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
+						FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
                     ]
                 );
             }
@@ -317,6 +312,10 @@ class DirectoryScannerController implements ScannerInterface
         $this->queue->resetState();
         delete_transient(ScanQueueController::TRANSIENT_NAME);
         wp_clear_scheduled_hook(self::EVENT_NAME);
+
+		// Update the node count and size for directories
+		$this->updateDirectoryNodeCountAndSize();
+
         do_action(self::ACTION_SCAN_COMPLETE);
     }
 
@@ -334,6 +333,19 @@ class DirectoryScannerController implements ScannerInterface
         return $this->isValidFileType($fileType) ? $fileType : FileSystemNodesTable::FILE_TYPE_UNKNOWN;
     }
 
+	/**
+	 * Requeue an item
+	 * 
+	 * @param ScannerQueueItem $item
+	 * 
+	 * @return void
+	 */
+	private function requeueItem(ScannerQueueItem $item)
+    {
+        $item->decrementRetry();
+        $this->queue->enqueue($item);
+    }
+
     /**
      * Check if the file type is valid
      * 
@@ -345,4 +357,65 @@ class DirectoryScannerController implements ScannerInterface
     {
         return in_array($fileType, FileSystemNodesTable::getFileTypes(), true);
     }
+
+	/**
+	 * Update the node count and size for directories
+	 * 
+	 * @return void
+	 */
+	private function updateDirectoryNodeCountAndSize()
+	{
+		global $wpdb;
+
+		$nodesTable = FileSystemNodesTable::getInstance()->getName();
+		$nodesClosureTable = FileSystemClosureTable::getInstance()->getName();
+
+		$dirQuery = "SELECT n1.id, SUM(n2.node_count) AS node_count, SUM(n2.size) AS size
+			FROM $nodesTable n1
+			JOIN $nodesTable n2
+			JOIN $nodesClosureTable c
+			ON n1.id = c.ancestor AND n2.id = c.descendant
+			WHERE n1.type = %s AND n1.id != n2.id
+			GROUP BY n1.id";
+
+		$directories = $wpdb->get_results($wpdb->prepare($dirQuery, FileSystemNodesTable::FILE_TYPE_DIR));
+
+		// Begin a transaction for atomicity.
+		$wpdb->query('START TRANSACTION');
+
+		try {
+			foreach ($directories as $directory) {
+				$wpdb->update(
+					$nodesTable,
+					[
+						FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
+						FileSystemNodesTable::COLUMN_SIZE => $directory->size
+					],
+					['id' => $directory->id],
+					['%d', '%d'],
+					['%d']
+				);
+			}
+
+			// Commit the transaction if all updates succeeded.
+			$wpdb->query('COMMIT');
+		} catch (Exception $e) {
+			// Rollback the transaction.
+			$wpdb->query('ROLLBACK');
+			$this->logError(sprintf(__('Update directory node count and size failed: %s', 'dup-challenge'), $e->getMessage()));
+		}
+
+	}
+
+	/**
+	 * Log an error
+	 * 
+	 * @param string $message
+	 * 
+	 * @return void
+	 */
+	private function logError(string $message)
+	{
+		error_log( sprintf(__('Error: %s', 'dup-challenge'), $message));
+	}
 }
