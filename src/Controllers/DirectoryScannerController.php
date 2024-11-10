@@ -72,7 +72,11 @@ class DirectoryScannerController implements ScannerInterface
 			return;
 		}
 
-		$this->cleanup();
+		if (!$this->cleanup()) {
+			error_log(__('Failed to cleanup tables', 'dup-challenge'));
+			return;
+		}
+
 		$this->queue->enqueue( new ScannerQueueItem($rootPath) );
 		$this->queue->saveState();
 
@@ -288,13 +292,17 @@ class DirectoryScannerController implements ScannerInterface
 	/**
 	 * Cleanup the database tables
 	 * 
-	 * @return void
+	 * @return bool True if the cleanup was successful, false otherwise
 	 */
 	private function cleanup()
 	{
 		$this->queue->resetState();
-		$this->tableController->truncateTable(FileSystemClosureTable::getInstance()->getName());
-		$this->tableController->truncateTable(FileSystemNodesTable::getInstance()->getName());
+
+		// Truncate tables and return the final status
+		$closureTableTruncate = $this->tableController->truncateTable(FileSystemClosureTable::getInstance()->getName());
+		$nodesTableTruncate = $this->tableController->truncateTable(FileSystemNodesTable::getInstance()->getName());
+
+		return $closureTableTruncate && $nodesTableTruncate;
 	}
 
 	/**
