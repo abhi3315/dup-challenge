@@ -224,7 +224,7 @@ class DirectoryScannerController implements ScannerInterface
 		try {
 			$data = [
 				FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
-				FileSystemNodesTable::COLUMN_TYPE => $item->getType(),
+				FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
 				FileSystemNodesTable::COLUMN_NODE_COUNT =>$item->isDir() ? 0 : 1, // Node count for directories will be updated after the scan
 				FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
 				FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified()
@@ -308,5 +308,31 @@ class DirectoryScannerController implements ScannerInterface
 		delete_transient(ScanQueueController::TRANSIENT_NAME);
 		wp_clear_scheduled_hook(self::EVENT_NAME);
 		do_action(self::ACTION_SCAN_COMPLETE);
+	}
+
+	/**
+	 * Get the node file type
+	 * 
+	 * @param ScannerQueueItem $item
+	 * 
+	 * @return string
+	 */
+	private function getNodeFileType(ScannerQueueItem $item)
+	{
+		$fileType = $item->getType();
+
+		return $this->isValidFileType($fileType) ? $fileType : FileSystemNodesTable::FILE_TYPE_UNKNOWN;
+	}
+
+	/**
+	 * Check if the file type is valid
+	 * 
+	 * @param string $fileType
+	 * 
+	 * @return bool
+	 */
+	private function isValidFileType(string $fileType)
+	{
+		return in_array($fileType, FileSystemNodesTable::getFileTypes(), true);
 	}
 }
