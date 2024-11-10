@@ -27,6 +27,16 @@ if (!defined('DUP_WP_ROOT_PATH')) {
 	define('DUP_WP_ROOT_PATH', ABSPATH);
 }
 
+// Define chunk size for file scanning
+if (!defined('DUP_CHUNK_SIZE')) {
+	define('DUP_CHUNK_SIZE', 1000);
+}
+
+// Define chunk processing time gap in seconds
+if (!defined('DUP_CHUNK_PROCESSING_GAP')) {
+	define('DUP_CHUNK_PROCESSING_GAP', 2);
+}
+
 require_once(DUP_CHALLENGE_PATH . '/src/Utils/Autoloader.php');
 DupChallenge\Utils\Autoloader::register();
 DupChallenge\Bootstrap::init();
