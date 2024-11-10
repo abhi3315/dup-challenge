@@ -3,7 +3,7 @@
 namespace DupChallenge;
 
 use DupChallenge\Controllers\AdminPagesController;
-use DupChallenge\Controllers\FileScannerController;
+use DupChallenge\Controllers\DirectoryScannerController;
 
 class Bootstrap
 {
@@ -17,10 +17,9 @@ class Bootstrap
         Install::register();
         Unistall::register();
 
-        FileScannerController::getInstance();
-
         add_action('admin_init', [__CLASS__, 'hookAdminInit']);
         add_action('admin_menu', [__CLASS__, 'menuInit']);
+		add_action(DirectoryScannerController::EVENT_NAME, [__CLASS__, 'hookScanEvent']);
     }
 
     /**
@@ -60,4 +59,14 @@ class Bootstrap
             [AdminPagesController::getInstance(), 'settingsPageAction']
         );
     }
+
+	/**
+	 * Hook scan event
+	 *
+	 * @return void
+	 */
+	public static function hookScanEvent()
+	{
+		DirectoryScannerController::getInstance()->processScanChunk();
+	}
 }
