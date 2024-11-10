@@ -15,6 +15,10 @@ class TableController implements TableControllerInterface
 
     /**
      * @inheritDoc
+     *
+     * @param TableInterface $table The table to create
+     *
+     * @return bool True on success, false on failure
      */
     public function createTable(TableInterface $table = null)
     {
@@ -32,9 +36,7 @@ class TableController implements TableControllerInterface
         $foreignKeysSql = $this->getForeignKeysSql($table);
         $tableCharset = $wpdb->get_charset_collate();
 
-        /**
-               * WordPress file with the dbDelta() function.
-               */
+        // Include upgrade.php for dbDelta function
         include_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
         // Create table if it does not exist
@@ -52,7 +54,7 @@ class TableController implements TableControllerInterface
     /**
      * Returns SQL string for the columns in the given table schema
      *
-     * @param TableInterface $table
+     * @param TableInterface $table The table to get the columns from
      *
      * @return string SQL string for the columns
      */
@@ -70,7 +72,7 @@ class TableController implements TableControllerInterface
     /**
      * Returns the SQL string for the keys of the given table
      *
-     * @param TableInterface $table
+     * @param TableInterface $table The table to get the keys from
      *
      * @return string SQL string for the keys
      */
@@ -83,7 +85,7 @@ class TableController implements TableControllerInterface
     /**
      * Returns the SQL string for the foreign keys of the given table
      *
-     * @param TableInterface $table
+     * @param TableInterface $table The table to get the foreign keys from
      *
      * @return string SQL string for the foreign keys
      */
@@ -106,6 +108,10 @@ class TableController implements TableControllerInterface
 
     /**
      * @inheritDoc
+     *
+     * @param string $tableName The name of the table to check
+     *
+     * @return bool True if the table exists, false otherwise
      */
     public function tableExists($tableName)
     {
@@ -122,6 +128,10 @@ class TableController implements TableControllerInterface
 
     /**
      * @inheritDoc
+     *
+     * @param string $tableName The name of the table to drop
+     *
+     * @return bool True on success, false on failure
      */
     public function dropTable($tableName)
     {
@@ -140,6 +150,11 @@ class TableController implements TableControllerInterface
 
     /**
      * @inheritDoc
+     *
+     * @param string $tableName The name of the table to insert into
+     * @param array  $data      An associative array of column names and values
+     *
+     * @return false|int False on failure, the id of the inserted row on success
      */
     public function insertData($tableName, $data)
     {
@@ -156,6 +171,11 @@ class TableController implements TableControllerInterface
 
     /**
      * @inheritDoc
+     *
+     * @param string $tableName The name of the table to delete from
+     * @param array  $where     An associative array of column names and values to match
+     *
+     * @return int|false The number of rows affected, or false on failure
      */
     public function deleteData($tableName, $where)
     {
@@ -166,6 +186,10 @@ class TableController implements TableControllerInterface
 
     /**
      * @inheritDoc
+     *
+     * @param string $tableName The name of the table to truncate
+     *
+     * @return bool True on success, false on failure
      */
     public function truncateTable($tableName)
     {

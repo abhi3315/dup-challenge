@@ -26,28 +26,28 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Queue
-     * 
+     *
      * @var QueueInterface
      */
     protected $queue;
 
     /**
      * Table controller
-     * 
+     *
      * @var TableControllerInterface
      */
     protected $tableController;
 
     /**
      * Chunk size
-     * 
+     *
      * @var int
      */
     protected $chunkSize;
 
     /**
      * Chunk processing gap
-     * 
+     *
      * @var int
      */
     protected $chunkProcessingGap;
@@ -65,8 +65,12 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * @inheritDoc
+     *
+     * @param string $rootPath The root path to start the scan
+     *
+     * @return void
      */
-    public function startScanJob( string $rootPath = DUP_WP_ROOT_PATH)
+    public function startScanJob(string $rootPath = DUP_WP_ROOT_PATH)
     {
         if (!is_dir($rootPath)) {
             return;
@@ -80,13 +84,18 @@ class DirectoryScannerController implements ScannerInterface
         $this->queue->enqueue(new ScannerQueueItem($rootPath));
         $this->queue->saveState();
 
-        if(!wp_next_scheduled(self::EVENT_NAME)) {
+        if (!wp_next_scheduled(self::EVENT_NAME)) {
             wp_schedule_single_event(time() + $this->chunkProcessingGap, self::EVENT_NAME);
         }
 
         do_action(self::ACTION_SCAN_START);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @return void
+     */
     public function processScanChunk(): void
     {
         $this->queue->loadState();
@@ -115,8 +124,10 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Check if an item is processable
-     * 
-     * @param ScannerQueueItem $item
+     *
+     * @param ScannerQueueItem $item The item to check
+     *
+     * @return bool True if the item is processable, false otherwise
      */
     private function isProcessable(?ScannerQueueItem $item): bool
     {
@@ -125,9 +136,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Process an item
-     * 
-     * @param ScannerQueueItem $item
-     * 
+     *
+     * @param ScannerQueueItem $item The item to process
+     *
      * @return void
      */
     private function processItem(ScannerQueueItem $item)
@@ -137,9 +148,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Process a directory
-     * 
-     * @param ScannerQueueItem $item
-     * 
+     *
+     * @param ScannerQueueItem $item The item to process
+     *
      * @return void
      */
     private function processDirectory(ScannerQueueItem $item)
@@ -158,9 +169,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Enqueue child directories
-     * 
-     * @param ScannerQueueItem $parentItem
-     * 
+     *
+     * @param ScannerQueueItem $parentItem The parent item
+     *
      * @return void
      */
     private function enqueueChildDirectories(ScannerQueueItem $parentItem)
@@ -190,9 +201,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Process a file
-     * 
-     * @param ScannerQueueItem $item
-     * 
+     *
+     * @param ScannerQueueItem $item The item to process
+     *
      * @return void
      */
     private function processFile(ScannerQueueItem $item)
@@ -208,9 +219,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Insert a node into the database
-     * 
-     * @param ScannerQueueItem $item
-     * 
+     *
+     * @param ScannerQueueItem $item The item to insert
+     *
      * @return int The inserted node ID
      */
     private function insertNode(ScannerQueueItem $item)
@@ -222,16 +233,16 @@ class DirectoryScannerController implements ScannerInterface
 
         try {
             $data = [
-            FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
-            FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
-            FileSystemNodesTable::COLUMN_NODE_COUNT => 1, // Node count for directories will be updated after the scan
-            FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
-            FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified()
+                FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
+                FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
+                FileSystemNodesTable::COLUMN_NODE_COUNT => 1, // Node count for directories will be updated after the scan
+                FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
+                FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified()
             ];
 
-            
+
             $nodeId = $this->tableController->insertData(FileSystemNodesTable::getInstance()->getName(), $data);
-            
+
             if (!$nodeId) {
                 throw new Exception(__('Failed to insert node', 'dup-challenge'));
             }
@@ -243,7 +254,6 @@ class DirectoryScannerController implements ScannerInterface
             $wpdb->query('COMMIT');
 
             return $nodeId;
-
         } catch (Exception $e) {
             // Rollback the transaction
             $wpdb->query('ROLLBACK');
@@ -254,11 +264,11 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Insert closure records into the database
-     * 
-     * @param ScannerQueueItem $item
-     * 
+     *
+     * @param ScannerQueueItem $item The item to insert closure records for
+     *
      * @throws Exception If the closure insertion fails
-     * 
+     *
      * @return void
      */
     private function insertClosureRecords(ScannerQueueItem $item)
@@ -274,9 +284,10 @@ class DirectoryScannerController implements ScannerInterface
             $ancestorId = $ancestor->getRecordId();
             $decendantId = $item->getRecordId();
 
-            if($ancestorId && $decendantId) {
+            if ($ancestorId && $decendantId) {
                 $this->tableController->insertData(
-                    FileSystemClosureTable::getInstance()->getName(), [
+                    FileSystemClosureTable::getInstance()->getName(),
+                    [
                     FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
                     FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
                     FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
@@ -288,7 +299,7 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Cleanup the database tables
-     * 
+     *
      * @return bool True if the cleanup was successful, false otherwise
      */
     private function cleanup()
@@ -304,7 +315,7 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Finalize the scan
-     * 
+     *
      * @return void
      */
     private function finalizeScan()
@@ -321,9 +332,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Get the node file type
-     * 
-     * @param ScannerQueueItem $item
-     * 
+     *
+     * @param ScannerQueueItem $item The item to get the file type for
+     *
      * @return string The file type
      */
     private function getNodeFileType(ScannerQueueItem $item)
@@ -335,9 +346,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Requeue an item
-     * 
-     * @param ScannerQueueItem $item
-     * 
+     *
+     * @param ScannerQueueItem $item The item to requeue
+     *
      * @return void
      */
     private function requeueItem(ScannerQueueItem $item)
@@ -348,9 +359,9 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Check if the file type is valid
-     * 
-     * @param string $fileType
-     * 
+     *
+     * @param string $fileType The file type
+     *
      * @return bool True if the file type is valid, false otherwise
      */
     private function isValidFileType(string $fileType)
@@ -360,7 +371,7 @@ class DirectoryScannerController implements ScannerInterface
 
     /**
      * Update the node count and size for directories
-     * 
+     *
      * @return void
      */
     private function updateDirectoryNodeCountAndSize()
@@ -404,14 +415,13 @@ class DirectoryScannerController implements ScannerInterface
             $wpdb->query('ROLLBACK');
             $this->logError(sprintf(__('Update directory node count and size failed: %s', 'dup-challenge'), $e->getMessage()));
         }
-
     }
 
     /**
      * Log an error
-     * 
-     * @param string $message
-     * 
+     *
+     * @param string $message The error message
+     *
      * @return void
      */
     private function logError(string $message)

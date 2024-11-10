@@ -42,6 +42,8 @@ class FileSystemNodesTable implements TableInterface
 
     /**
      * @inheritDoc
+     *
+     * @return string The name of the table
      */
     public function getName()
     {
@@ -52,22 +54,26 @@ class FileSystemNodesTable implements TableInterface
 
     /**
      * @inheritDoc
+     *
+     * @return array The schema of the table
      */
     public function getSchema()
     {
         return [
-        self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
-        self::COLUMN_PATH => 'VARCHAR(255) NOT NULL UNIQUE',
-        self::COLUMN_TYPE => 'ENUM(\'' . implode("','", self::getFileTypes()) . '\') DEFAULT \'' . self::FILE_TYPE_UNKNOWN . '\'',
-        self::COLUMN_SIZE => 'BIGINT UNSIGNED DEFAULT 0',
-        self::COLUMN_NODE_COUNT => 'INT UNSIGNED DEFAULT 1',
-        self::COLUMN_LAST_MODIFIED => 'DATETIME DEFAULT NULL',
-        self::COLUMN_LAST_SCANNED => 'DATETIME DEFAULT CURRENT_TIMESTAMP',
+            self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
+            self::COLUMN_PATH => 'VARCHAR(255) NOT NULL UNIQUE',
+            self::COLUMN_TYPE => 'ENUM(\'' . implode("','", self::getFileTypes()) . '\') DEFAULT \'' . self::FILE_TYPE_UNKNOWN . '\'',
+            self::COLUMN_SIZE => 'BIGINT UNSIGNED DEFAULT 0',
+            self::COLUMN_NODE_COUNT => 'INT UNSIGNED DEFAULT 1',
+            self::COLUMN_LAST_MODIFIED => 'DATETIME DEFAULT NULL',
+            self::COLUMN_LAST_SCANNED => 'DATETIME DEFAULT CURRENT_TIMESTAMP',
         ];
     }
 
     /**
      * @inheritDoc
+     *
+     * @return string The primary key of the table
      */
     public function getPrimaryKey()
     {
@@ -76,6 +82,8 @@ class FileSystemNodesTable implements TableInterface
 
     /**
      * @inheritDoc
+     *
+     * @return array|null The foreign key of the table
      */
     public function getForeignKey()
     {

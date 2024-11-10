@@ -7,7 +7,6 @@ namespace DupChallenge\Traits;
  */
 trait SingletonTrait
 {
-
     /**
      * Protected class constructor to prevent direct object creation
      */
@@ -17,6 +16,8 @@ trait SingletonTrait
 
     /**
      * Prevent object cloning
+     *
+     * @return void
      */
     final protected function __clone()
     {
@@ -41,15 +42,13 @@ trait SingletonTrait
          */
         $calledClass = get_called_class();
 
-        if (! isset($instances[ $calledClass ]) ) {
-
+        if (! isset($instances[ $calledClass ])) {
             $instances[ $calledClass ] = new $calledClass();
 
             /**
              * Dependent items can use the dup_challenge_singleton_init_{$calledClass} hook to execute code
              */
             do_action(sprintf('dup_challenge_singleton_init_%s', $calledClass));
-
         }
 
         return $instances[ $calledClass ];

@@ -27,6 +27,8 @@ class FileSystemClosureTable implements TableInterface
 
     /**
      * @inheritDoc
+     *
+     * @return string The name of the table
      */
     public function getName()
     {
@@ -37,19 +39,23 @@ class FileSystemClosureTable implements TableInterface
 
     /**
      * @inheritDoc
+     *
+     * @return array The schema of the table
      */
     public function getSchema()
     {
         return [
-        self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
-        self::COLUMN_ANCESTOR => 'INT UNSIGNED NOT NULL',
-        self::COLUMN_DESCENDANT => 'INT UNSIGNED NOT NULL',
-        self::COLUMN_DEPTH => 'INT UNSIGNED NOT NULL',
+            self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
+            self::COLUMN_ANCESTOR => 'INT UNSIGNED NOT NULL',
+            self::COLUMN_DESCENDANT => 'INT UNSIGNED NOT NULL',
+            self::COLUMN_DEPTH => 'INT UNSIGNED NOT NULL',
         ];
     }
 
     /**
      * @inheritDoc
+     *
+     * @return string The primary key of the table
      */
     public function getPrimaryKey()
     {
@@ -58,18 +64,20 @@ class FileSystemClosureTable implements TableInterface
 
     /**
      * @inheritDoc
+     *
+     * @return array The foreign keys of the table
      */
     public function getForeignKey()
     {
         return [
-        self::COLUMN_ANCESTOR => $this->getForeignKeyDefinition(),
-        self::COLUMN_DESCENDANT => $this->getForeignKeyDefinition(),
+            self::COLUMN_ANCESTOR => $this->getForeignKeyDefinition(),
+            self::COLUMN_DESCENDANT => $this->getForeignKeyDefinition(),
         ];
     }
 
     /**
      * Get foreign key definition for ancestor or descendant
-     * 
+     *
      * @return string The foreign key definition
      */
     private function getForeignKeyDefinition()

@@ -18,7 +18,7 @@ class ScanQueueController implements QueueInterface
 
     /**
      * Queue
-     * 
+     *
      * @var SplQueue
      */
     private $queue;
@@ -33,8 +33,10 @@ class ScanQueueController implements QueueInterface
 
     /**
      * @inheritDoc
-     * 
-     * @param ScannerQueueItem $item
+     *
+     * @param ScannerQueueItem $item The item to enqueue
+     *
+     * @return void
      */
     public function enqueue($item)
     {
@@ -43,7 +45,7 @@ class ScanQueueController implements QueueInterface
 
     /**
      * @inheritDoc
-     * 
+     *
      * @return ScannerQueueItem|null Queue item
      */
     public function dequeue()
@@ -53,6 +55,8 @@ class ScanQueueController implements QueueInterface
 
     /**
      * @inheritDoc
+     *
+     * @return bool True if the queue is empty, false otherwise
      */
     public function isEmpty()
     {
@@ -61,6 +65,8 @@ class ScanQueueController implements QueueInterface
 
     /**
      * @inheritDoc
+     *
+     * @return void
      */
     public function saveState()
     {
@@ -69,6 +75,8 @@ class ScanQueueController implements QueueInterface
 
     /**
      * @inheritDoc
+     *
+     * @return void
      */
     public function loadState()
     {
@@ -81,6 +89,8 @@ class ScanQueueController implements QueueInterface
 
     /**
      * @inheritDoc
+     *
+     * @return void
      */
     public function resetState()
     {

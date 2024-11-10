@@ -11,7 +11,6 @@ use DupChallenge\Views\Settings\SettingsPageView;
  */
 class AdminPagesController
 {
-
     // Use trait to implement singleton pattern
     use SingletonTrait;
 
