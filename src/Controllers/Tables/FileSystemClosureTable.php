@@ -10,13 +10,12 @@ use DupChallenge\Interfaces\TableInterface;
  */
 class FileSystemClosureTable implements TableInterface
 {
-
-	// Use trait to implement singleton pattern
 	use SingletonTrait;
 
 	/**
 	 * Table column names
 	 */
+	const COLUMN_ID = 'id';
 	const COLUMN_ANCESTOR = 'ancestor';
 	const COLUMN_DESCENDANT = 'descendant';
 	const COLUMN_DEPTH = 'depth';
@@ -42,6 +41,7 @@ class FileSystemClosureTable implements TableInterface
 	public function getSchema()
 	{
 		return [
+			self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
 			self::COLUMN_ANCESTOR => 'INT UNSIGNED NOT NULL',
 			self::COLUMN_DESCENDANT => 'INT UNSIGNED NOT NULL',
 			self::COLUMN_DEPTH => 'INT UNSIGNED NOT NULL',
@@ -53,11 +53,7 @@ class FileSystemClosureTable implements TableInterface
 	 */
 	public function getPrimaryKey()
 	{
-		return sprintf(
-			'%1$s,%2$s',
-			self::COLUMN_ANCESTOR,
-			self::COLUMN_DESCENDANT
-		);
+		return self::COLUMN_ID;
 	}
 
 	/**
@@ -66,36 +62,22 @@ class FileSystemClosureTable implements TableInterface
 	public function getForeignKey()
 	{
 		return [
-			self::COLUMN_ANCESTOR => $this->getAncestorForeignKey(),
-			self::COLUMN_DESCENDANT => $this->getDescendantForeignKey(),
+			self::COLUMN_ANCESTOR => $this->getForeignKeyDefinition(),
+			self::COLUMN_DESCENDANT => $this->getForeignKeyDefinition(),
 		];
 	}
 
 	/**
-	 * Get ancestor foreign key
-	 * 
-	 * @return string
-	 */
-	private function getAncestorForeignKey()
-	{
-		return sprintf(
-			'%1$s(%2$s)',
-			FileSystemNodesTable::getInstance()->getName(),
-			FileSystemNodesTable::COLUMN_ID
-		);
-	}
-
-	/**
-	 * Get descendant foreign key
-	 *
-	 * @return string
-	 */
-	private function getDescendantForeignKey()
-	{
-		return sprintf(
-			'%1$s(%2$s)',
-			FileSystemNodesTable::getInstance()->getName(),
-			FileSystemNodesTable::COLUMN_ID
-		);
-	}
+     * Get foreign key definition for ancestor or descendant
+     * 
+     * @return string The foreign key definition
+     */
+    private function getForeignKeyDefinition()
+    {
+        return sprintf(
+            '%1$s(%2$s)',
+            FileSystemNodesTable::getInstance()->getName(),
+            FileSystemNodesTable::COLUMN_ID
+        );
+    }
 }
