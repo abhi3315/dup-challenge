@@ -19,7 +19,7 @@ class Bootstrap
 
         add_action('admin_init', [__CLASS__, 'hookAdminInit']);
         add_action('admin_menu', [__CLASS__, 'menuInit']);
-		add_action(DirectoryScannerController::EVENT_NAME, [__CLASS__, 'hookScanEvent']);
+        add_action(DirectoryScannerController::EVENT_NAME, [__CLASS__, 'hookScanEvent']);
     }
 
     /**
@@ -60,13 +60,13 @@ class Bootstrap
         );
     }
 
-	/**
-	 * Hook scan event
-	 *
-	 * @return void
-	 */
-	public static function hookScanEvent()
-	{
-		DirectoryScannerController::getInstance()->processScanChunk();
-	}
+    /**
+     * Hook scan event
+     *
+     * @return void
+     */
+    public static function hookScanEvent()
+    {
+        DirectoryScannerController::getInstance()->processScanChunk();
+    }
 }

@@ -11,67 +11,67 @@ use DupChallenge\Interfaces\TableControllerInterface;
  */
 class TableController implements TableControllerInterface
 {
-	use SingletonTrait;
+    use SingletonTrait;
 
     /**
      * @inheritDoc
      */
     public function createTable(TableInterface $table = null)
-	{
-		if ($table === null) {
-			return false; // Return false if no table is provided
-		}
+    {
+        if ($table === null) {
+            return false; // Return false if no table is provided
+        }
 
-		// Global WordPress database object
-		global $wpdb;
+        // Global WordPress database object
+        global $wpdb;
 
-		// Get table SQL query and charset
-		$tableName = $table->getName();
-		$columnsSql = $this->getColumnSql($table);
-		$keysSql = $this->getKeysSql($table);
-		$foreignKeysSql = $this->getForeignKeysSql($table);
-		$tableCharset = $wpdb->get_charset_collate();
+        // Get table SQL query and charset
+        $tableName = $table->getName();
+        $columnsSql = $this->getColumnSql($table);
+        $keysSql = $this->getKeysSql($table);
+        $foreignKeysSql = $this->getForeignKeysSql($table);
+        $tableCharset = $wpdb->get_charset_collate();
 
-		/**
-         * WordPress file with the dbDelta() function.
-         */
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        /**
+               * WordPress file with the dbDelta() function.
+               */
+        include_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		// Create table if it does not exist
-		$sql = "CREATE TABLE IF NOT EXISTS {$tableName} (
+        // Create table if it does not exist
+        $sql = "CREATE TABLE IF NOT EXISTS {$tableName} (
 			{$columnsSql}
 			{$keysSql}
 			{$foreignKeysSql}
 		) {$tableCharset};";
 
-		dbDelta($sql);
+        dbDelta($sql);
 
-		return $this->tableExists($tableName);
-	}
+        return $this->tableExists($tableName);
+    }
 
-	/**
+    /**
      * Returns SQL string for the columns in the given table schema
      *
      * @param TableInterface $table
-	 *
+     *
      * @return string SQL string for the columns
      */
     private function getColumnSql(TableInterface $table)
-	{
-		$schema = $table->getSchema();
-		$sql = '';
-		foreach ($schema as $name => $definition) {
-			$sql .= "\n\t{$name} {$definition},";
-		}
+    {
+        $schema = $table->getSchema();
+        $sql = '';
+        foreach ($schema as $name => $definition) {
+            $sql .= "\n\t{$name} {$definition},";
+        }
 
-		return rtrim($sql, ',');
-	}
+        return rtrim($sql, ',');
+    }
 
-	/**
+    /**
      * Returns the SQL string for the keys of the given table
      *
      * @param TableInterface $table
-	 *
+     *
      * @return string SQL string for the keys
      */
     private function getKeysSql(TableInterface $table)
@@ -80,109 +80,109 @@ class TableController implements TableControllerInterface
         return $primaryKey ? ",\n\tPRIMARY KEY  ({$primaryKey})" : '';
     }
 
-	/**
-	 * Returns the SQL string for the foreign keys of the given table
-	 *
-	 * @param TableInterface $table
-	 *
-	 * @return string SQL string for the foreign keys
-	 */
-	private function getForeignKeysSql(TableInterface $table)
-	{
-		$foreignKeys = '';
-		$foreignKeysArray = $table->getForeignKey();
+    /**
+     * Returns the SQL string for the foreign keys of the given table
+     *
+     * @param TableInterface $table
+     *
+     * @return string SQL string for the foreign keys
+     */
+    private function getForeignKeysSql(TableInterface $table)
+    {
+        $foreignKeys = '';
+        $foreignKeysArray = $table->getForeignKey();
 
-		// Return empty string if no foreign keys
-		if (empty($foreignKeysArray) || !is_array($foreignKeysArray)) {
-			return $foreignKeys;
-		}
+        // Return empty string if no foreign keys
+        if (empty($foreignKeysArray) || !is_array($foreignKeysArray)) {
+            return $foreignKeys;
+        }
 
-		foreach ($foreignKeysArray as $column => $foreignKey) {
-			$foreignKeys .= ",\n\tFOREIGN KEY ({$column}) REFERENCES {$foreignKey} ON DELETE CASCADE";
-		}
+        foreach ($foreignKeysArray as $column => $foreignKey) {
+            $foreignKeys .= ",\n\tFOREIGN KEY ({$column}) REFERENCES {$foreignKey} ON DELETE CASCADE";
+        }
 
-		return "{$foreignKeys}\n";
-	}
+        return "{$foreignKeys}\n";
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function tableExists($tableName)
-	{
-		global $wpdb;
+    /**
+     * @inheritDoc
+     */
+    public function tableExists($tableName)
+    {
+        global $wpdb;
 
-		$query = $wpdb->prepare("SHOW TABLES LIKE %s", $tableName);
+        $query = $wpdb->prepare("SHOW TABLES LIKE %s", $tableName);
 
-		if ($wpdb->get_var($query) === $tableName) {
-			return true;
-		}
+        if ($wpdb->get_var($query) === $tableName) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function dropTable($tableName)
-	{
-		global $wpdb;
+    /**
+     * @inheritDoc
+     */
+    public function dropTable($tableName)
+    {
+        global $wpdb;
 
-		$tableName = esc_sql($tableName);
+        $tableName = esc_sql($tableName);
 
-		$query = "DROP TABLE IF EXISTS {$tableName}";
+        $query = "DROP TABLE IF EXISTS {$tableName}";
 
-		if ($wpdb->query($query) === false) {
-			return false;
-		}
+        if ($wpdb->query($query) === false) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function insertData($tableName, $data)
-	{
-		global $wpdb;
+    /**
+     * @inheritDoc
+     */
+    public function insertData($tableName, $data)
+    {
+        global $wpdb;
 
-		$wpdb->insert($tableName, $data);
+        $wpdb->insert($tableName, $data);
 
-		if ($wpdb->insert_id === 0) {
-			return false;
-		}
+        if ($wpdb->insert_id === 0) {
+            return false;
+        }
 
-		return $wpdb->insert_id;
-	}
+        return $wpdb->insert_id;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function deleteData($tableName, $where)
-	{
-		global $wpdb;
+    /**
+     * @inheritDoc
+     */
+    public function deleteData($tableName, $where)
+    {
+        global $wpdb;
 
-		return $wpdb->delete($tableName, $where);
-	}
+        return $wpdb->delete($tableName, $where);
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function truncateTable($tableName)
-	{
-		global $wpdb;
+    /**
+     * @inheritDoc
+     */
+    public function truncateTable($tableName)
+    {
+        global $wpdb;
 
-		$tableName = esc_sql($tableName);
+        $tableName = esc_sql($tableName);
 
-		// Disable foreign key checks
-		$wpdb->query('SET foreign_key_checks = 0');
+        // Disable foreign key checks
+        $wpdb->query('SET foreign_key_checks = 0');
 
-		$query = "TRUNCATE TABLE {$tableName}";
+        $query = "TRUNCATE TABLE {$tableName}";
 
-		$result = $wpdb->query($query);
+        $result = $wpdb->query($query);
 
-		// Re-enable foreign key checks
-		$wpdb->query('SET foreign_key_checks = 1');
+        // Re-enable foreign key checks
+        $wpdb->query('SET foreign_key_checks = 1');
 
-		return boolval($result);
-	}
+        return boolval($result);
+    }
 }

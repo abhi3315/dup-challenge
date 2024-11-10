@@ -10,64 +10,64 @@ use DupChallenge\Interfaces\TableInterface;
  */
 class FileSystemClosureTable implements TableInterface
 {
-	use SingletonTrait;
+    use SingletonTrait;
 
-	/**
-	 * Table column names
-	 */
-	const COLUMN_ID = 'id';
-	const COLUMN_ANCESTOR = 'ancestor';
-	const COLUMN_DESCENDANT = 'descendant';
-	const COLUMN_DEPTH = 'depth';
+    /**
+     * Table column names
+     */
+    const COLUMN_ID = 'id';
+    const COLUMN_ANCESTOR = 'ancestor';
+    const COLUMN_DESCENDANT = 'descendant';
+    const COLUMN_DEPTH = 'depth';
 
-	/**
-	 * Table name
-	 */
-	const TABLE_NAME = 'dup_file_system_closure';
+    /**
+     * Table name
+     */
+    const TABLE_NAME = 'dup_file_system_closure';
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getName()
-	{
-		global $wpdb;
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        global $wpdb;
 
-		return $wpdb->prefix . self::TABLE_NAME;
-	}
+        return $wpdb->prefix . self::TABLE_NAME;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getSchema()
-	{
-		return [
-			self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
-			self::COLUMN_ANCESTOR => 'INT UNSIGNED NOT NULL',
-			self::COLUMN_DESCENDANT => 'INT UNSIGNED NOT NULL',
-			self::COLUMN_DEPTH => 'INT UNSIGNED NOT NULL',
-		];
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getSchema()
+    {
+        return [
+        self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
+        self::COLUMN_ANCESTOR => 'INT UNSIGNED NOT NULL',
+        self::COLUMN_DESCENDANT => 'INT UNSIGNED NOT NULL',
+        self::COLUMN_DEPTH => 'INT UNSIGNED NOT NULL',
+        ];
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getPrimaryKey()
-	{
-		return self::COLUMN_ID;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getPrimaryKey()
+    {
+        return self::COLUMN_ID;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getForeignKey()
-	{
-		return [
-			self::COLUMN_ANCESTOR => $this->getForeignKeyDefinition(),
-			self::COLUMN_DESCENDANT => $this->getForeignKeyDefinition(),
-		];
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getForeignKey()
+    {
+        return [
+        self::COLUMN_ANCESTOR => $this->getForeignKeyDefinition(),
+        self::COLUMN_DESCENDANT => $this->getForeignKeyDefinition(),
+        ];
+    }
 
-	/**
+    /**
      * Get foreign key definition for ancestor or descendant
      * 
      * @return string The foreign key definition

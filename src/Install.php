@@ -30,8 +30,8 @@ class Install
      */
     public static function onActivation()
     {
-		$tableController = TableController::getInstance();
-		$tableController->createTable(FileSystemNodesTable::getInstance());
-		$tableController->createTable(FileSystemClosureTable::getInstance());
+        $tableController = TableController::getInstance();
+        $tableController->createTable(FileSystemNodesTable::getInstance());
+        $tableController->createTable(FileSystemClosureTable::getInstance());
     }
 }
