@@ -4,6 +4,7 @@ namespace DupChallenge;
 
 use DupChallenge\Controllers\AdminPagesController;
 use DupChallenge\Controllers\DirectoryScannerController;
+use DupChallenge\Controllers\Endpoints\StartScanEndpoint;
 
 class Bootstrap
 {
@@ -19,6 +20,7 @@ class Bootstrap
 
         add_action('admin_init', [__CLASS__, 'hookAdminInit']);
         add_action('admin_menu', [__CLASS__, 'menuInit']);
+        add_action('rest_api_init', [__CLASS__, 'registerRestEndpoints']);
         add_action(DirectoryScannerController::EVENT_NAME, [__CLASS__, 'hookScanEvent']);
     }
 
@@ -68,5 +70,15 @@ class Bootstrap
     public static function hookScanEvent()
     {
         DirectoryScannerController::getInstance()->processScanChunk();
+    }
+
+    /**
+     * Register rest endpoints
+     *
+     * @return void
+     */
+    public static function registerRestEndpoints()
+    {
+        StartScanEndpoint::getInstance()->register();
     }
 }
