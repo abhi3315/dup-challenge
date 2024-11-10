@@ -70,7 +70,7 @@ class DirectoryScannerController implements ScannerInterface
      *
      * @return void
      */
-    public function startScanJob(string $rootPath = DUP_WP_ROOT_PATH)
+    public function startScanJob($rootPath = DUP_WP_ROOT_PATH)
     {
         if (!is_dir($rootPath)) {
             return;
@@ -96,7 +96,7 @@ class DirectoryScannerController implements ScannerInterface
      *
      * @return void
      */
-    public function processScanChunk(): void
+    public function processScanChunk()
     {
         $this->queue->loadState();
 
@@ -125,11 +125,11 @@ class DirectoryScannerController implements ScannerInterface
     /**
      * Check if an item is processable
      *
-     * @param ScannerQueueItem $item The item to check
+     * @param mixed $item The item to check
      *
      * @return bool True if the item is processable, false otherwise
      */
-    private function isProcessable(?ScannerQueueItem $item): bool
+    private function isProcessable(mixed $item)
     {
         return $item instanceof ScannerQueueItem && $item->hasRetries();
     }
@@ -185,11 +185,15 @@ class DirectoryScannerController implements ScannerInterface
                 continue;
             }
 
+			// Get the ancestors of the parent item
+			$ancestors = $parentItem->getAncestors();
+			$ancestors[] = $parentItem;
+
             $this->queue->enqueue(
                 new ScannerQueueItem(
                     $child->getPathname(),
                     $child->getType(),
-                    [...$parentItem->getAncestors(), $parentItem],
+					$ancestors,
                     $parentItem->getDepth() + 1,
                     $parentItem,
                     $child->getSize(),
@@ -364,7 +368,7 @@ class DirectoryScannerController implements ScannerInterface
      *
      * @return bool True if the file type is valid, false otherwise
      */
-    private function isValidFileType(string $fileType)
+    private function isValidFileType($fileType)
     {
         return in_array($fileType, FileSystemNodesTable::getFileTypes(), true);
     }
@@ -424,7 +428,7 @@ class DirectoryScannerController implements ScannerInterface
      *
      * @return void
      */
-    private function logError(string $message)
+    private function logError($message)
     {
         error_log(sprintf(__('Error: %s', 'dup-challenge'), $message));
     }

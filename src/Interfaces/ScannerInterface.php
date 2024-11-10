@@ -14,7 +14,7 @@ interface ScannerInterface
      *
      * @return void
      */
-    public function startScanJob(string $rootPath);
+    public function startScanJob($rootPath);
 
     /**
      * Process the scan chunk
