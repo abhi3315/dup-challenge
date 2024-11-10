@@ -24,12 +24,10 @@ trait SingletonTrait
 
     /**
 	 * Get the singleton instance of the class.
-	 * 
-	 * @param mixed ...$dependencies Dependencies to be passed to the constructor.
      *
      * @return static The singleton instance of the called class.
      */
-    final public static function getInstance( ...$dependencies)
+    final public static function getInstance()
 	{
 		/**
 		 * Static array to hold the singleton instances of the called classes.
@@ -45,7 +43,7 @@ trait SingletonTrait
 
 		if (! isset($instances[ $calledClass ]) ) {
 
-			$instances[ $calledClass ] = new $calledClass(...$dependencies);
+			$instances[ $calledClass ] = new $calledClass();
 
 			/**
 			 * Dependent items can use the dup_challenge_singleton_init_{$calledClass} hook to execute code

@@ -55,12 +55,12 @@ class DirectoryScannerController implements ScannerInterface
 	/**
 	 * Constructor
 	 */
-	protected function __construct( QueueInterface $queue, TableControllerInterface $tableController, int $chunkSize = DUP_CHUNK_SIZE, int $chunkProcessingGap = DUP_CHUNK_PROCESSING_GAP)
+	protected function __construct()
 	{
-		$this->queue = $queue;
-		$this->tableController = $tableController;
-		$this->chunkSize = $chunkSize;
-		$this->chunkProcessingGap = $chunkProcessingGap;
+		$this->queue = ScanQueueController::getInstance();
+		$this->tableController = TableController::getInstance();
+		$this->chunkSize = DUP_CHUNK_SIZE;
+		$this->chunkProcessingGap = DUP_CHUNK_PROCESSING_GAP;
 	}
 
 	/**
