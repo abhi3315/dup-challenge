@@ -5,6 +5,8 @@
 
     <exclude-pattern>/.git/*</exclude-pattern>
     <exclude-pattern>/vendor/*</exclude-pattern>
+
+	<file>./</file>
     
     <description>Duplicator PSR12 coding standard.</description>
     <rule ref="PSR12">
@@ -28,6 +30,8 @@
         </properties>
     </rule>
 
-    <rule ref="PEAR.Commenting.FunctionComment" >
-    </rule>
+    <rule ref="PEAR.Commenting.FunctionComment" />
+
+	<config name="testVersion" value="5.6-"/>
+	<rule ref="PHPCompatibilityWP" />
 </ruleset>

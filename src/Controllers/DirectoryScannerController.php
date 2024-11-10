@@ -185,15 +185,15 @@ class DirectoryScannerController implements ScannerInterface
                 continue;
             }
 
-			// Get the ancestors of the parent item
-			$ancestors = $parentItem->getAncestors();
-			$ancestors[] = $parentItem;
+            // Get the ancestors of the parent item
+            $ancestors = $parentItem->getAncestors();
+            $ancestors[] = $parentItem;
 
             $this->queue->enqueue(
                 new ScannerQueueItem(
                     $child->getPathname(),
                     $child->getType(),
-					$ancestors,
+                    $ancestors,
                     $parentItem->getDepth() + 1,
                     $parentItem,
                     $child->getSize(),
