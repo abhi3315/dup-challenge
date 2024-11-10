@@ -44,7 +44,7 @@ class ScanQueueController implements QueueInterface
 	/**
 	 * @inheritDoc
 	 * 
-	 * @return ScannerQueueItem|null
+	 * @return ScannerQueueItem|null Queue item
 	 */
 	public function dequeue()
 	{

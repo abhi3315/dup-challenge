@@ -95,7 +95,7 @@ class ScannerQueueItem
 	/**
 	 * Get the file path
 	 * 
-	 * @return string
+	 * @return string Path of the file or directory
 	 */
 	public function getPath()
 	{
@@ -105,7 +105,7 @@ class ScannerQueueItem
 	/**
 	 * Get the file type
 	 * 
-	 * @return string
+	 * @return string File type
 	 */
 	public function getType()
 	{
@@ -115,7 +115,7 @@ class ScannerQueueItem
 	/**
 	 * Is a directory
 	 * 
-	 * @return bool
+	 * @return bool True if the item is a directory, false otherwise
 	 */
 	public function isDir()
 	{
@@ -125,7 +125,7 @@ class ScannerQueueItem
 	/**
 	 * Get the size of the file
 	 * 
-	 * @return int
+	 * @return int Size of the file
 	 */
 	public function getSize()
 	{
@@ -135,7 +135,7 @@ class ScannerQueueItem
 	/**
 	 * Get the last modified time
 	 * 
-	 * @return int
+	 * @return int Last modified time
 	 */
 	public function getLastModified()
 	{
@@ -145,7 +145,7 @@ class ScannerQueueItem
 	/**
 	 * Get the depth relative to the root path
 	 * 
-	 * @return int
+	 * @return int Depth of the item relative to the root
 	 */
 	public function getDepth()
 	{
@@ -157,7 +157,7 @@ class ScannerQueueItem
 	 * 
 	 * @param ScannerQueueItem $item
 	 *
-	 * @return int
+	 * @return int Depth of the item relative to the given item
 	 */
 	public function getDepthRelativeTo(ScannerQueueItem $item)
 	{
@@ -167,7 +167,7 @@ class ScannerQueueItem
 	/**
 	 * Get the immediate parent
 	 * 
-	 * @return ScannerQueueItem
+	 * @return ScannerQueueItem Immediate parent
 	 */
 	public function getParent()
 	{
@@ -177,7 +177,7 @@ class ScannerQueueItem
 	/**
 	 * Get the maximum number of retries
 	 * 
-	 * @return int
+	 * @return int Maximum number of retries
 	 */
 	public function getRetry()
 	{
@@ -197,7 +197,7 @@ class ScannerQueueItem
 	/**
 	 * Check if the item has retries
 	 * 
-	 * @return bool
+	 * @return bool True if the item has retries, false otherwise
 	 */
 	public function hasRetries()
 	{
@@ -207,7 +207,7 @@ class ScannerQueueItem
 	/**
 	 * Get the set of ancestors
 	 * 
-	 * @return ScannerQueueItem[]
+	 * @return ScannerQueueItem[] Ancestors of the current file or directory
 	 */
 	public function getAncestors()
 	{
@@ -217,7 +217,7 @@ class ScannerQueueItem
 	/**
 	 * Get the database record id
 	 * 
-	 * @return int
+	 * @return int Database record id
 	 */
 	public function getRecordId()
 	{

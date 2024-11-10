@@ -212,7 +212,7 @@ class DirectoryScannerController implements ScannerInterface
 	 * 
 	 * @param ScannerQueueItem $item
 	 * 
-	 * @return int
+	 * @return int The inserted node ID
 	 */
 	private function insertNode(ScannerQueueItem $item)
 	{
@@ -315,7 +315,7 @@ class DirectoryScannerController implements ScannerInterface
 	 * 
 	 * @param ScannerQueueItem $item
 	 * 
-	 * @return string
+	 * @return string The file type
 	 */
 	private function getNodeFileType(ScannerQueueItem $item)
 	{
@@ -329,7 +329,7 @@ class DirectoryScannerController implements ScannerInterface
 	 * 
 	 * @param string $fileType
 	 * 
-	 * @return bool
+	 * @return bool True if the file type is valid, false otherwise
 	 */
 	private function isValidFileType(string $fileType)
 	{

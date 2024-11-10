@@ -24,7 +24,7 @@ final class Autoloader
      *
      * @param string $className class name
      *
-     * @return bool return true if class is loaded
+     * @return bool Return true if class is loaded
      */
     public static function load($className)
     {
@@ -46,7 +46,7 @@ final class Autoloader
     /**
      * Return namespace mapping
      *
-     * @return string[]
+     * @return string[] Namespace mapping
      */
     protected static function getNamespacesMapping()
     {

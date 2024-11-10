@@ -10,7 +10,7 @@ interface QueueInterface
 	/**
 	 * Enqueue an item
 	 * 
-	 * @param array $item
+	 * @param mixed $item
 	 * 
 	 * @return void
 	 */
@@ -19,14 +19,14 @@ interface QueueInterface
 	/**
 	 * Dequeue an item
 	 * 
-	 * @return array
+	 * @return mixed Queue item
 	 */
 	public function dequeue();
 
 	/**
 	 * Is the queue empty
 	 * 
-	 * @return bool
+	 * @return bool True if the queue is empty, false otherwise
 	 */
 	public function isEmpty();
 
@@ -43,4 +43,11 @@ interface QueueInterface
 	 * @return void
 	 */
 	public function loadState();
+
+	/**
+	 * Reset the queue state
+	 * 
+	 * @return void
+	 */
+	public function resetState();
 }

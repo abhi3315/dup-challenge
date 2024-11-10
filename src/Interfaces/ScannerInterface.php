@@ -8,13 +8,13 @@ namespace DupChallenge\Interfaces;
 interface ScannerInterface
 {
 	/**
-	 * Start the scan
+	 * Start the scan process
 	 * 
-	 * @param string $rootDir
+	 * @param string $rootPath
 	 * 
 	 * @return void
 	 */
-	public function startScanJob($rootDir);
+	public function startScanJob(string $rootPath);
 
 	/**
 	 * Process the scan chunk

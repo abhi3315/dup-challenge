@@ -29,21 +29,7 @@ trait SingletonTrait
      *
      * @return self Singleton instance of the class.
      */
-    final public static function getInstance($forceNew = false, ...$dependencies)
-	{
-		if ($forceNew) {
-			return new static(...$dependencies);
-		}
-
-		return static::singleton();
-	}
-
-	/**
-	 * Get the singleton instance of the class.
-	 *
-	 * @return self Singleton instance of the class.
-	 */
-	private static function singleton()
+    final public static function getInstance( ...$dependencies)
 	{
 		/**
 		 * Collection of instance.
@@ -59,7 +45,7 @@ trait SingletonTrait
 
 		if (! isset($instance[ $called_class ]) ) {
 
-			$instance[ $called_class ] = new $called_class();
+			$instance[ $called_class ] = new $called_class(...$dependencies);
 
 			/**
 			 * Dependent items can use the dup_challenge_singleton_init_{$called_class} hook to execute code

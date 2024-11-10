@@ -87,7 +87,7 @@ class FileSystemNodesTable implements TableInterface
      *
      * @return array The available file types
      */
-    private static function getFileTypes(): array
+    public static function getFileTypes(): array
     {
         return [
             self::FILE_TYPE_FILE,

@@ -12,7 +12,7 @@ interface TableControllerInterface
 	 * 
 	 * @param TableInterface $table
 	 * 
-	 * @return bool
+	 * @return bool True on success, false on failure
 	 */
 	public function createTable(TableInterface $table);
 
@@ -21,7 +21,7 @@ interface TableControllerInterface
 	 * 
 	 * @param string $tableName
 	 * 
-	 * @return bool
+	 * @return bool True if the table exists, false otherwise
 	 */
 	public function tableExists($tableName);
 
@@ -30,7 +30,7 @@ interface TableControllerInterface
 	 * 
 	 * @param string $tableName
 	 * 
-	 * @return bool
+	 * @return bool True on success, false on failure
 	 */
 	public function dropTable($tableName);
 
@@ -41,7 +41,7 @@ interface TableControllerInterface
 	 * @param string $tableName
 	 * @param array $data
 	 *
-	 * @return false|int
+	 * @return false|int False on failure, the id of the inserted row on success
 	 */
 	public function insertData($tableName, $data);
 
@@ -50,7 +50,7 @@ interface TableControllerInterface
 	 * 
 	 * @param string $tableName
 	 * 
-	 * @return int|false
+	 * @return int|false The number of rows affected, or false on failure
 	 */
 	public function deleteData($tableName, $where);
 
@@ -60,7 +60,7 @@ interface TableControllerInterface
 	 * 
 	 * @param string $tableName
 	 * 
-	 * @return bool
+	 * @return bool True on success, false on failure
 	 */
 	public function truncateTable($tableName);
 }
