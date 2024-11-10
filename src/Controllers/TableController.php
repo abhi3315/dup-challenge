@@ -4,28 +4,22 @@ namespace DupChallenge\Controllers;
 
 use DupChallenge\Traits\SingletonTrait;
 use DupChallenge\Interfaces\TableInterface;
-use DupChallenge\Interfaces\BaseControllerInterface;
+use DupChallenge\Interfaces\TableControllerInterface;
 
 /**
  * Singleton class controller to create custom table.
  */
-class TableController implements BaseControllerInterface
+class TableController implements TableControllerInterface
 {
-
-	// Use trait to implement singleton pattern
 	use SingletonTrait;
 
     /**
-     * Initialize the scanner
-	 * 
-	 * @param TableInterface $table
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function createTable(TableInterface $table = null)
 	{
 		if ($table === null) {
-			return;
+			return false; // Return false if no table is provided
 		}
 
 		// Global WordPress database object
@@ -43,86 +37,77 @@ class TableController implements BaseControllerInterface
          */
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		dbDelta("CREATE TABLE IF NOT EXISTS {$tableName} (
+		// Create table if it does not exist
+		$sql = "CREATE TABLE IF NOT EXISTS {$tableName} (
 			{$columnsSql}
 			{$keysSql}
 			{$foreignKeysSql}
-		) {$tableCharset};");
+		) {$tableCharset};";
 
-		// Check if table was created
-		if (!$this->tableExists($tableName)) {
-			return false;
-		}
+		dbDelta($sql);
 
-		return true;
+		return $this->tableExists($tableName);
 	}
 
 	/**
      * Returns SQL string for the columns in the given table schema
      *
      * @param TableInterface $table
-     * @return string
+	 *
+     * @return string SQL string for the columns
      */
     private function getColumnSql(TableInterface $table)
 	{
 		$schema = $table->getSchema();
 		$sql = '';
 		foreach ($schema as $name => $definition) {
-			$sql and $sql .= ',';
-			$sql .= "\n\t{$name} {$definition}";
+			$sql .= "\n\t{$name} {$definition},";
 		}
 
-		return $sql;
+		return rtrim($sql, ',');
 	}
 
 	/**
      * Returns the SQL string for the keys of the given table
      *
      * @param TableInterface $table
-     * @return string
+	 *
+     * @return string SQL string for the keys
      */
     private function getKeysSql(TableInterface $table)
     {
-        $keys = '';
         $primaryKey = $table->getPrimaryKey();
-        if ($primaryKey) {
-            // Due to dbDelta: two spaces after PRIMARY KEY!
-            $keys .= ",\n\tPRIMARY KEY  ({$primaryKey})";
-        }
-
-        return "{$keys}\n";
+        return $primaryKey ? ",\n\tPRIMARY KEY  ({$primaryKey})" : '';
     }
 
 	/**
 	 * Returns the SQL string for the foreign keys of the given table
 	 *
 	 * @param TableInterface $table
-	 * @return string
+	 *
+	 * @return string SQL string for the foreign keys
 	 */
 	private function getForeignKeysSql(TableInterface $table)
 	{
 		$foreignKeys = '';
 		$foreignKeysArray = $table->getForeignKey();
 
+		// Return empty string if no foreign keys
 		if (empty($foreignKeysArray) || !is_array($foreignKeysArray)) {
 			return $foreignKeys;
 		}
 
 		foreach ($foreignKeysArray as $column => $foreignKey) {
-			$foreignKeys .= ",\n\tFOREIGN KEY ({$column}) REFERENCES {$foreignKey}";
+			$foreignKeys .= ",\n\tFOREIGN KEY ({$column}) REFERENCES {$foreignKey} ON DELETE CASCADE";
 		}
 
 		return "{$foreignKeys}\n";
 	}
 
 	/**
-	 * Check if a table exists
-	 * 
-	 * @param string $tableName
-	 * 
-	 * @return bool
+	 * @inheritDoc
 	 */
-	private function tableExists($tableName)
+	public function tableExists($tableName)
 	{
 		global $wpdb;
 
@@ -136,17 +121,15 @@ class TableController implements BaseControllerInterface
 	}
 
 	/**
-	 * Drop table
-	 * 
-	 * @param string $tableName
-	 * 
-	 * @return bool
+	 * @inheritDoc
 	 */
 	public function dropTable($tableName)
 	{
 		global $wpdb;
 
-		$query = $wpdb->prepare("DROP TABLE IF EXISTS %s", $tableName);
+		$tableName = esc_sql($tableName);
+
+		$query = "DROP TABLE IF EXISTS {$tableName}";
 
 		if ($wpdb->query($query) === false) {
 			return false;
@@ -156,12 +139,7 @@ class TableController implements BaseControllerInterface
 	}
 
 	/**
-	 * Insert data into table
-	 * 
-	 * @param string $tableName
-	 * @param array $data
-	 * 
-	 * @return bool|int
+	 * @inheritDoc
 	 */
 	public function insertData($tableName, $data)
 	{
@@ -177,22 +155,34 @@ class TableController implements BaseControllerInterface
 	}
 
 	/**
-	 * Truncate table
-	 * 
-	 * @param string $tableName
-	 * 
-	 * @return bool
+	 * @inheritDoc
+	 */
+	public function deleteData($tableName, $where)
+	{
+		global $wpdb;
+
+		return $wpdb->delete($tableName, $where);
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public function truncateTable($tableName)
 	{
 		global $wpdb;
 
-		$query = $wpdb->prepare("TRUNCATE TABLE %s", $tableName);
+		$tableName = esc_sql($tableName);
 
-		if ($wpdb->query($query) === false) {
-			return false;
-		}
+		// Disable foreign key checks
+		$wpdb->query('SET foreign_key_checks = 0');
 
-		return true;
+		$query = "TRUNCATE TABLE {$tableName}";
+
+		$result = $wpdb->query($query);
+
+		// Re-enable foreign key checks
+		$wpdb->query('SET foreign_key_checks = 1');
+
+		return boolval($result);
 	}
 }
