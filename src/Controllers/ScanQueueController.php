@@ -3,6 +3,7 @@
 namespace DupChallenge\Controllers;
 
 use SplQueue;
+use DupChallenge\Utils\ScannerQueueItem;
 use DupChallenge\Traits\SingletonTrait;
 use DupChallenge\Interfaces\QueueInterface;
 
@@ -32,6 +33,8 @@ class ScanQueueController implements QueueInterface
 
 	/**
 	 * @inheritDoc
+	 * 
+	 * @param ScannerQueueItem $item
 	 */
 	public function enqueue($item)
 	{
@@ -40,6 +43,8 @@ class ScanQueueController implements QueueInterface
 
 	/**
 	 * @inheritDoc
+	 * 
+	 * @return ScannerQueueItem|null
 	 */
 	public function dequeue()
 	{
@@ -72,5 +77,14 @@ class ScanQueueController implements QueueInterface
 		if (!$this->queue instanceof SplQueue) {
 			$this->queue = new SplQueue();
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function resetState()
+	{
+		$this->queue = new SplQueue();
+		$this->saveState();
 	}
 }
