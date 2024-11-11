@@ -289,7 +289,7 @@ class DirectoryScannerController implements ScannerInterface
             $decendantId = $item->getRecordId();
 
             if ($ancestorId && $decendantId) {
-                $this->tableController->insertData(
+                $inserted = $this->tableController->insertData(
                     FileSystemClosureTable::getInstance()->getName(),
                     [
                     FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
@@ -297,6 +297,10 @@ class DirectoryScannerController implements ScannerInterface
                     FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
                     ]
                 );
+
+				if (!$inserted) {
+					throw new Exception(sprintf(__('Failed to insert closure record for ancestor ID: %d and descendant ID: %d', 'dup-challenge'), $ancestorId, $decendantId));
+				}
             }
         }
     }
@@ -395,30 +399,22 @@ class DirectoryScannerController implements ScannerInterface
 
         $directories = $wpdb->get_results($wpdb->prepare($dirQuery, FileSystemNodesTable::FILE_TYPE_DIR));
 
-        // Begin a transaction for atomicity.
-        $wpdb->query('START TRANSACTION');
+		foreach ($directories as $directory) {
+			$result = $wpdb->update(
+				$nodesTable,
+				[
+				FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
+				FileSystemNodesTable::COLUMN_SIZE => $directory->size
+				],
+				['id' => $directory->id],
+				['%d', '%d'],
+				['%d']
+			);
 
-        try {
-            foreach ($directories as $directory) {
-                $wpdb->update(
-                    $nodesTable,
-                    [
-                    FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
-                    FileSystemNodesTable::COLUMN_SIZE => $directory->size
-                    ],
-                    ['id' => $directory->id],
-                    ['%d', '%d'],
-                    ['%d']
-                );
-            }
-
-            // Commit the transaction if all updates succeeded.
-            $wpdb->query('COMMIT');
-        } catch (Exception $e) {
-            // Rollback the transaction.
-            $wpdb->query('ROLLBACK');
-            $this->logError(sprintf(__('Update directory node count and size failed: %s', 'dup-challenge'), $e->getMessage()));
-        }
+			if ($result === false) {
+				$this->logError(__('Failed to update directory node count and size for node ID: ' . $directory->id, 'dup-challenge'));
+			}
+		}
     }
 
     /**
