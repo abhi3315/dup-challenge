@@ -428,4 +428,63 @@ class DirectoryScannerController implements ScannerInterface
     {
         error_log(sprintf(__('Error: %s', 'dup-challenge'), $message));
     }
+
+	/**
+	 * Get the tree
+	 * 
+	 * @param int $id The ID of the node to start the tree from. If not provided, the tree will start from the root.
+	 * @param int $depth The depth of the tree. If not provided, the entire tree will be returned.
+	 * 
+	 * @return array The tree nodes structure
+	 */
+	public function getTree($id = null, $depth = null)
+	{
+		global $wpdb;
+
+		$nodesTable = FileSystemNodesTable::getInstance()->getName();
+		$nodesClosureTable = FileSystemClosureTable::getInstance()->getName();
+
+		$columns = [
+			'n1.id',
+			'n1.path',
+			'n1.type',
+			'n1.node_count',
+			'n1.size',
+			'n1.last_modified'
+		];
+
+		$query = "SELECT " . implode(', ', $columns) . "
+			FROM $nodesTable n1
+			JOIN $nodesClosureTable c
+			ON n1.id = c.descendant";
+
+		$params = [];
+
+		if ($id) {
+			$query .= " WHERE c.ancestor = %d";
+			$params[] = $id;
+		}
+
+		if ($depth) {
+			$query .= " AND c.depth <= %d";
+			$params[] = $depth;
+		}
+
+		$nodes = $wpdb->get_results($wpdb->prepare($query, $params));
+
+		$tree = [];
+
+		foreach ($nodes as $node) {
+			$tree[] = [
+				'id' => $node->id,
+				'path' => $node->path,
+				'type' => $node->type,
+				'node_count' => $node->node_count,
+				'size' => $node->size,
+				'last_modified' => $node->last_modified
+			];
+		}
+
+		return $tree;
+	}
 }
