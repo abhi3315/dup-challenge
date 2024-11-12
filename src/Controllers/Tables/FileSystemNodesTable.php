@@ -17,6 +17,7 @@ class FileSystemNodesTable implements TableInterface
      */
     const COLUMN_ID = 'id';
     const COLUMN_PATH = 'path';
+	const COLUMN_NAME = 'name';
     const COLUMN_TYPE = 'type';
     const COLUMN_SIZE = 'size';
 	const COLUMN_PARENT_ID = 'parent_id';
@@ -63,6 +64,7 @@ class FileSystemNodesTable implements TableInterface
         return [
             self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
             self::COLUMN_PATH => 'VARCHAR(255) NOT NULL UNIQUE',
+			self::COLUMN_NAME => 'VARCHAR(255) NOT NULL',
             self::COLUMN_TYPE => 'ENUM(\'' . implode("','", self::getFileTypes()) . '\') DEFAULT \'' . self::FILE_TYPE_UNKNOWN . '\'',
             self::COLUMN_SIZE => 'BIGINT UNSIGNED DEFAULT 0',
 			self::COLUMN_PARENT_ID => 'INT UNSIGNED DEFAULT NULL',

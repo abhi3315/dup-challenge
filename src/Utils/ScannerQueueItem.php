@@ -21,6 +21,13 @@ class ScannerQueueItem
      */
     private $type;
 
+	/**
+	 * File name
+	 *
+	 * @var string
+	 */
+	private $name;
+
     /**
      * Depth relative to the root path
      *
@@ -74,6 +81,7 @@ class ScannerQueueItem
      * Constructor
      *
      * @param string           $path         Path of the file or directory
+	 * @param string           $name         Name of the file or directory
      * @param string           $type         File type
      * @param array            $ancestors    Ancestors of the current file or directory
      * @param int              $depth        Depth of the item relative to the root
@@ -81,9 +89,10 @@ class ScannerQueueItem
      * @param int              $size         Size of the file
      * @param int              $lastModified Last modified time
      */
-    public function __construct($path, $type = 'dir', $ancestors = [], $depth = 0, $parent = null, $size = 0, $lastModified = 0)
+    public function __construct($path, $name, $type = 'dir', $ancestors = [], $depth = 0, $parent = null, $size = 0, $lastModified = 0)
     {
         $this->path = $path;
+		$this->name = $name;
         $this->type = $type;
         $this->depth = $depth;
         $this->parent = $parent;
@@ -101,6 +110,16 @@ class ScannerQueueItem
     {
         return $this->path;
     }
+
+	/**
+	 * Get the file name
+	 * 
+	 * @return string Name of the file or directory
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
 
     /**
      * Get the file type

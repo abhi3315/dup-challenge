@@ -2,6 +2,7 @@
 
 namespace DupChallenge\Controllers;
 
+use SPLFileInfo;
 use Exception;
 use RecursiveDirectoryIterator;
 use DupChallenge\Utils\ScannerQueueItem;
@@ -81,7 +82,9 @@ class DirectoryScannerController implements ScannerInterface
             return;
         }
 
-        $this->queue->enqueue(new ScannerQueueItem($rootPath));
+		$root = new SPLFileInfo($rootPath);
+
+        $this->queue->enqueue(new ScannerQueueItem($root->getPathname(), $root->getFilename(), $root->getType()));
         $this->queue->saveState();
 
         if (!wp_next_scheduled(self::EVENT_NAME)) {
@@ -192,6 +195,7 @@ class DirectoryScannerController implements ScannerInterface
             $this->queue->enqueue(
                 new ScannerQueueItem(
                     $child->getPathname(),
+					$child->getFilename(),
                     $child->getType(),
                     $ancestors,
                     $parentItem->getDepth() + 1,
@@ -238,6 +242,7 @@ class DirectoryScannerController implements ScannerInterface
         try {
             $data = [
                 FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
+				FileSystemNodesTable::COLUMN_NAME => $item->getName(),
                 FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
                 FileSystemNodesTable::COLUMN_NODE_COUNT => 1, // Node count for directories will be updated after the scan
                 FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
