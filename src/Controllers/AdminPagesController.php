@@ -5,6 +5,7 @@ namespace DupChallenge\Controllers;
 use DupChallenge\Traits\SingletonTrait;
 use DupChallenge\Views\Main\MainPageView;
 use DupChallenge\Views\Settings\SettingsPageView;
+use DupChallenge\Interfaces\RestEndpointInterface;
 
 /**
  * Singleton class controller for admin pages
@@ -29,12 +30,24 @@ class AdminPagesController
         }
 
         wp_enqueue_script(
-            'duplicator-challenge-admin-scripts',
-            DUP_CHALLENGE_URL . '/assets/js/admin.js',
+            'duplicator-challenge-main-scripts',
+            DUP_CHALLENGE_URL . '/dist/index.js',
             [],
             DUP_CHALLENGE_VERSION,
             true
         );
+
+        wp_enqueue_style(
+            'duplicator-challenge-main-styles',
+            DUP_CHALLENGE_URL . '/dist/index.css',
+            [],
+            DUP_CHALLENGE_VERSION
+        );
+
+        wp_localize_script('duplicator-challenge-admin-scripts', 'dupChallengeRest', [
+            'root' => esc_url_raw(rest_url(RestEndpointInterface::ENDPOINT_NAMESPACE)),
+            'nonce' => wp_create_nonce('wp_rest'),
+        ]);
     }
 
     /**

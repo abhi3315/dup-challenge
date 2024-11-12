@@ -27,12 +27,16 @@ class ScannerStatusController
      */
     public function getStatus()
     {
-        $status = get_option(self::OPTION_NAME, [
-            'started' => false,
-            'startedAt' => 0,
-            'finished' => false,
-            'finishedAt' => 0,
-        ]);
+        $status = get_option(self::OPTION_NAME);
+
+        if (!$status || !is_array($status)) {
+            $status = [
+                'started' => false,
+                'startedAt' => 0,
+                'finished' => false,
+                'finishedAt' => 0,
+            ];
+        }
 
         $status['totalScannedItems'] = $this->getTotalScannedItems();
 

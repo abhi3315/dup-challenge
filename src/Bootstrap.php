@@ -6,6 +6,7 @@ use DupChallenge\Controllers\AdminPagesController;
 use DupChallenge\Controllers\DirectoryScannerController;
 use DupChallenge\Controllers\Endpoints\StartScanEndpoint;
 use DupChallenge\Controllers\Endpoints\TreeViewEndpoint;
+use DupChallenge\Controllers\Endpoints\ScanStatus;
 use DupChallenge\Controllers\Crons\DirectoryScannerCron;
 use DupChallenge\Controllers\ScannerStatusController;
 
@@ -87,5 +88,6 @@ class Bootstrap
     {
         StartScanEndpoint::getInstance()->register();
         TreeViewEndpoint::getInstance()->register();
+        ScanStatus::getInstance()->register();
     }
 }

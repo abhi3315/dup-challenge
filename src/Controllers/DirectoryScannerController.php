@@ -23,7 +23,7 @@ class DirectoryScannerController implements ScannerInterface
 
     const EVENT_HOOK = 'dup_challenge_process_scan_chunk';
     const ACTION_SCAN_START = 'dup_challenge_scan_start';
-    const ACTION_SCAN_COMPLETE = 'dup_challenge_scan_complete';
+    const ACTION_SCAN_END = 'dup_challenge_scan_end';
 
     /**
      * Queue
@@ -370,7 +370,7 @@ class DirectoryScannerController implements ScannerInterface
         // Update the node count and size for directories
         $this->updateDirectoryNodeCountAndSize();
 
-        do_action(self::ACTION_SCAN_COMPLETE);
+        do_action(self::ACTION_SCAN_END);
     }
 
     /**
