@@ -21,12 +21,12 @@ class ScannerQueueItem
      */
     private $type;
 
-	/**
-	 * File name
-	 *
-	 * @var string
-	 */
-	private $name;
+    /**
+     * File name
+     *
+     * @var string
+     */
+    private $name;
 
     /**
      * Depth relative to the root path
@@ -38,7 +38,7 @@ class ScannerQueueItem
     /**
      * Immediate parent
      *
-     * @var ScannerQueueItem
+     * @var ScannerQueueItem|null
      */
     private $parent;
 
@@ -80,19 +80,27 @@ class ScannerQueueItem
     /**
      * Constructor
      *
-     * @param string           $path         Path of the file or directory
-	 * @param string           $name         Name of the file or directory
-     * @param string           $type         File type
-     * @param array            $ancestors    Ancestors of the current file or directory
-     * @param int              $depth        Depth of the item relative to the root
-     * @param ScannerQueueItem $parent       Immediate parent
-     * @param int              $size         Size of the file
-     * @param int              $lastModified Last modified time
+     * @param string                  $path         Path of the file or directory
+     * @param string                  $name         Name of the file or directory
+     * @param string                  $type         File type
+     * @param array<ScannerQueueItem> $ancestors    Ancestors of the current file or directory
+     * @param int                     $depth        Depth of the item relative to the root
+     * @param ScannerQueueItem        $parent       Immediate parent
+     * @param int                     $size         Size of the file
+     * @param int                     $lastModified Last modified time
      */
-    public function __construct($path, $name, $type = 'dir', $ancestors = [], $depth = 0, $parent = null, $size = 0, $lastModified = 0)
-    {
+    public function __construct(
+        $path,
+        $name,
+        $type = 'dir',
+        array $ancestors = [],
+        $depth = 0,
+        ScannerQueueItem $parent = null,
+        $size = 0,
+        $lastModified = 0
+    ) {
         $this->path = $path;
-		$this->name = $name;
+        $this->name = $name;
         $this->type = $type;
         $this->depth = $depth;
         $this->parent = $parent;
@@ -111,15 +119,15 @@ class ScannerQueueItem
         return $this->path;
     }
 
-	/**
-	 * Get the file name
-	 * 
-	 * @return string Name of the file or directory
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
+    /**
+     * Get the file name
+     *
+     * @return string Name of the file or directory
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * Get the file type
@@ -154,15 +162,15 @@ class ScannerQueueItem
     /**
      * Get the last modified time timestamp
      *
-     * @return string Last modified time in Y-m-d H:i:s format
+     * @return string|null Last modified time in Y-m-d H:i:s format
      */
     public function getLastModified()
     {
-		if ($this->lastModified) {
-			return date('Y-m-d H:i:s', $this->lastModified);
-		}
+        if ($this->lastModified) {
+            return date('Y-m-d H:i:s', $this->lastModified);
+        }
 
-		return null;
+        return null;
     }
 
     /**
@@ -190,7 +198,7 @@ class ScannerQueueItem
     /**
      * Get the immediate parent
      *
-     * @return ScannerQueueItem Immediate parent
+     * @return ScannerQueueItem|null Immediate parent
      */
     public function getParent()
     {

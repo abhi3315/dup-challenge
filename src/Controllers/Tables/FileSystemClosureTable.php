@@ -40,7 +40,7 @@ class FileSystemClosureTable implements TableInterface
     /**
      * @inheritDoc
      *
-     * @return array The schema of the table
+     * @return array<string, string> The schema of the table
      */
     public function getSchema()
     {
@@ -65,7 +65,7 @@ class FileSystemClosureTable implements TableInterface
     /**
      * @inheritDoc
      *
-     * @return array The foreign keys of the table
+     * @return array<string, string> The foreign keys of the table
      */
     public function getForeignKey()
     {

@@ -5,6 +5,7 @@ namespace DupChallenge;
 use DupChallenge\Controllers\AdminPagesController;
 use DupChallenge\Controllers\DirectoryScannerController;
 use DupChallenge\Controllers\Endpoints\StartScanEndpoint;
+use DupChallenge\Controllers\Endpoints\TreeViewEndpoint;
 
 class Bootstrap
 {
@@ -80,5 +81,6 @@ class Bootstrap
     public static function registerRestEndpoints()
     {
         StartScanEndpoint::getInstance()->register();
+        TreeViewEndpoint::getInstance()->register();
     }
 }

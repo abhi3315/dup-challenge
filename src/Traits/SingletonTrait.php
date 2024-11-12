@@ -33,7 +33,7 @@ trait SingletonTrait
         /**
          * Static array to hold the singleton instances of the called classes.
          *
-         * @var array
+         * @var array<string, static>
          */
         static $instances = [];
 

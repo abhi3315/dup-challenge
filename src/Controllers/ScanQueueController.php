@@ -50,7 +50,17 @@ class ScanQueueController implements QueueInterface
      */
     public function dequeue()
     {
-        return !$this->queue->isEmpty() ? $this->queue->dequeue() : null;
+        if ($this->queue->isEmpty()) {
+            return null;
+        }
+
+        $queueItem = $this->queue->dequeue();
+
+        if ($queueItem instanceof ScannerQueueItem) {
+            return $queueItem;
+        }
+
+        return null;
     }
 
     /**

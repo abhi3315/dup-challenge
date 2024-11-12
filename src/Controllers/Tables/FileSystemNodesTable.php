@@ -17,10 +17,10 @@ class FileSystemNodesTable implements TableInterface
      */
     const COLUMN_ID = 'id';
     const COLUMN_PATH = 'path';
-	const COLUMN_NAME = 'name';
+    const COLUMN_NAME = 'name';
     const COLUMN_TYPE = 'type';
     const COLUMN_SIZE = 'size';
-	const COLUMN_PARENT_ID = 'parent_id';
+    const COLUMN_PARENT_ID = 'parent_id';
     const COLUMN_NODE_COUNT = 'node_count';
     const COLUMN_LAST_MODIFIED = 'last_modified';
     const COLUMN_LAST_SCANNED = 'last_scanned';
@@ -57,17 +57,17 @@ class FileSystemNodesTable implements TableInterface
     /**
      * @inheritDoc
      *
-     * @return array The schema of the table
+     * @return array<string, string> The schema of the table
      */
     public function getSchema()
     {
         return [
             self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
             self::COLUMN_PATH => 'VARCHAR(255) NOT NULL UNIQUE',
-			self::COLUMN_NAME => 'VARCHAR(255) NOT NULL',
+            self::COLUMN_NAME => 'VARCHAR(255) NOT NULL',
             self::COLUMN_TYPE => 'ENUM(\'' . implode("','", self::getFileTypes()) . '\') DEFAULT \'' . self::FILE_TYPE_UNKNOWN . '\'',
             self::COLUMN_SIZE => 'BIGINT UNSIGNED DEFAULT 0',
-			self::COLUMN_PARENT_ID => 'INT UNSIGNED DEFAULT NULL',
+            self::COLUMN_PARENT_ID => 'INT UNSIGNED DEFAULT NULL',
             self::COLUMN_NODE_COUNT => 'INT UNSIGNED DEFAULT 1',
             self::COLUMN_LAST_MODIFIED => 'DATETIME DEFAULT NULL',
             self::COLUMN_LAST_SCANNED => 'DATETIME DEFAULT CURRENT_TIMESTAMP',
@@ -87,23 +87,23 @@ class FileSystemNodesTable implements TableInterface
     /**
      * @inheritDoc
      *
-     * @return array|null The foreign key of the table
+     * @return array<string, string> The foreign keys of the table
      */
     public function getForeignKey()
     {
-		return [
-			self::COLUMN_PARENT_ID => sprintf(
-				'%1$s(%2$s)',
-				$this->getName(),
-				self::COLUMN_ID
-			),
-		];
+        return [
+            self::COLUMN_PARENT_ID => sprintf(
+                '%1$s(%2$s)',
+                $this->getName(),
+                self::COLUMN_ID
+            ),
+        ];
     }
 
     /**
      * Retrieve the available file types.
      *
-     * @return array The available file types
+     * @return array<string> The available file types
      */
     public static function getFileTypes()
     {

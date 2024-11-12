@@ -17,7 +17,7 @@ interface TableInterface
     /**
      * Get table schema
      *
-     * @return array Table schema
+     * @return array<string, string> Table schema
      */
     public function getSchema();
 
@@ -31,7 +31,7 @@ interface TableInterface
     /**
      * Foreign key column name
      *
-     * @return array Foreign key column name
+     * @return array<string, string> Foreign key column name
      */
     public function getForeignKey();
 }

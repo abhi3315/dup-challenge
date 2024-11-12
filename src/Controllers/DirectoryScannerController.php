@@ -82,20 +82,20 @@ class DirectoryScannerController implements ScannerInterface
             return;
         }
 
-		$root = new SPLFileInfo($rootPath);
+        $root = new SPLFileInfo($rootPath);
 
         $this->queue->enqueue(
-			new ScannerQueueItem(
-				$root->getPathname(),
-				$root->getFilename(),
-				$root->getType(),
-				[],
-				0,
-				null,
-				$root->getSize(),
-				$root->getMTime()
-			)
-		);
+            new ScannerQueueItem(
+                $root->getPathname(),
+                $root->getFilename(),
+                $root->getType(),
+                [],
+                0,
+                null,
+                $root->getSize(),
+                $root->getMTime()
+            )
+        );
         $this->queue->saveState();
 
         if (!wp_next_scheduled(self::EVENT_NAME)) {
@@ -193,6 +193,11 @@ class DirectoryScannerController implements ScannerInterface
         $iterator = new RecursiveDirectoryIterator($parentItem->getPath(), RecursiveDirectoryIterator::SKIP_DOTS);
 
         foreach ($iterator as $child) {
+            // Check if the child is a file info object
+            if (!$child instanceof SPLFileInfo) {
+                continue;
+            }
+
             // Check if the child is readable
             if (!$child->isReadable()) {
                 $this->logError(sprintf(__('Skipping unreadable file: %s', 'dup-challenge'), $child->getPathname()));
@@ -203,10 +208,11 @@ class DirectoryScannerController implements ScannerInterface
             $ancestors = $parentItem->getAncestors();
             $ancestors[] = $parentItem;
 
+            // Enqueue the child directory
             $this->queue->enqueue(
                 new ScannerQueueItem(
                     $child->getPathname(),
-					$child->getFilename(),
+                    $child->getFilename(),
                     $child->getType(),
                     $ancestors,
                     $parentItem->getDepth() + 1,
@@ -251,23 +257,26 @@ class DirectoryScannerController implements ScannerInterface
         $wpdb->query('START TRANSACTION');
 
         try {
+            // Prepare the data to insert
             $data = [
                 FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
-				FileSystemNodesTable::COLUMN_NAME => $item->getName(),
+                FileSystemNodesTable::COLUMN_NAME => $item->getName(),
                 FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
                 FileSystemNodesTable::COLUMN_NODE_COUNT => 1, // Node count for directories will be updated after the scan
                 FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
                 FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified(),
-				FileSystemNodesTable::COLUMN_PARENT_ID => $item->getParent() ? $item->getParent()->getRecordId() : null
+                FileSystemNodesTable::COLUMN_PARENT_ID => $item->getParent() ? $item->getParent()->getRecordId() : null
             ];
 
-
+            // Insert the node
             $nodeId = $this->tableController->insertData(FileSystemNodesTable::getInstance()->getName(), $data);
 
+            // If the node was not inserted, throw an exception
             if (!$nodeId) {
                 throw new Exception(__('Failed to insert node', 'dup-challenge'));
             }
 
+            // Insert closure records
             $item->setRecordId($nodeId);
             $this->insertClosureRecords($item);
 
@@ -305,19 +314,27 @@ class DirectoryScannerController implements ScannerInterface
             $ancestorId = $ancestor->getRecordId();
             $decendantId = $item->getRecordId();
 
+            // Insert the closure record
             if ($ancestorId && $decendantId) {
                 $inserted = $this->tableController->insertData(
                     FileSystemClosureTable::getInstance()->getName(),
                     [
-						FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
-						FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
-						FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
+                        FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
+                        FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
+                        FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
                     ]
                 );
 
-				if (!$inserted) {
-					throw new Exception(sprintf(__('Failed to insert closure record for ancestor ID: %d and descendant ID: %d', 'dup-challenge'), $ancestorId, $decendantId));
-				}
+                // If the closure record was not inserted, throw an exception
+                if (!$inserted) {
+                    throw new Exception(
+                        sprintf(
+                            __('Failed to insert closure record for ancestor ID: %d and descendant ID: %d', 'dup-challenge'),
+                            $ancestorId,
+                            $decendantId
+                        )
+                    );
+                }
             }
         }
     }
@@ -330,7 +347,7 @@ class DirectoryScannerController implements ScannerInterface
     private function cleanup()
     {
         $this->queue->resetState();
-		wp_clear_scheduled_hook(self::EVENT_NAME);
+        wp_clear_scheduled_hook(self::EVENT_NAME);
 
         // Truncate tables and return the final status
         $closureTableTruncate = $this->tableController->truncateTable(FileSystemClosureTable::getInstance()->getName());
@@ -407,6 +424,7 @@ class DirectoryScannerController implements ScannerInterface
         $nodesTable = FileSystemNodesTable::getInstance()->getName();
         $nodesClosureTable = FileSystemClosureTable::getInstance()->getName();
 
+        // Query to get the node count and size for each directory
         $dirQuery = "SELECT node1.id, SUM(node2.node_count) AS node_count, SUM(node2.size) AS size
 			FROM $nodesTable node1
 			JOIN $nodesTable node2
@@ -417,22 +435,23 @@ class DirectoryScannerController implements ScannerInterface
 
         $directories = $wpdb->get_results($wpdb->prepare($dirQuery, FileSystemNodesTable::FILE_TYPE_DIR));
 
-		foreach ($directories as $directory) {
-			$result = $wpdb->update(
-				$nodesTable,
-				[
-					FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
-					FileSystemNodesTable::COLUMN_SIZE => $directory->size
-				],
-				['id' => $directory->id],
-				['%d', '%d'],
-				['%d']
-			);
+        // Update the node count and size for each directory
+        foreach ($directories as $directory) {
+            $result = $wpdb->update(
+                $nodesTable,
+                [
+                    FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
+                    FileSystemNodesTable::COLUMN_SIZE => $directory->size
+                ],
+                ['id' => $directory->id],
+                ['%d', '%d'],
+                ['%d']
+            );
 
-			if ($result === false) {
-				$this->logError(__('Failed to update directory node count and size for node ID: ' . $directory->id, 'dup-challenge'));
-			}
-		}
+            if ($result === false) {
+                $this->logError(__('Failed to update directory node count and size for node ID: ' . $directory->id, 'dup-challenge'));
+            }
+        }
     }
 
     /**

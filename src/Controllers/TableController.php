@@ -151,12 +151,12 @@ class TableController implements TableControllerInterface
     /**
      * @inheritDoc
      *
-     * @param string $tableName The name of the table to insert into
-     * @param array  $data      An associative array of column names and values
+     * @param string               $tableName The name of the table to insert into
+     * @param array<string, mixed> $data      An associative array of column names and values to insert
      *
      * @return false|int False on failure, the id of the inserted row on success
      */
-    public function insertData($tableName, $data)
+    public function insertData($tableName, array $data)
     {
         global $wpdb;
 
@@ -172,12 +172,12 @@ class TableController implements TableControllerInterface
     /**
      * @inheritDoc
      *
-     * @param string $tableName The name of the table to delete from
-     * @param array  $where     An associative array of column names and values to match
+     * @param string               $tableName The name of the table to delete from
+     * @param array<string, mixed> $where     An associative array of column names and values to match
      *
      * @return int|false The number of rows affected, or false on failure
      */
-    public function deleteData($tableName, $where)
+    public function deleteData($tableName, array $where)
     {
         global $wpdb;
 

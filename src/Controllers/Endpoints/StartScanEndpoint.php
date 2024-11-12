@@ -8,7 +8,6 @@ use WP_REST_Server;
 use WP_Error;
 use DupChallenge\Traits\SingletonTrait;
 use DupChallenge\Interfaces\RestEndpointInterface;
-use DupChallenge\Controllers\RestEndpointController;
 use DupChallenge\Controllers\DirectoryScannerController;
 
 /**

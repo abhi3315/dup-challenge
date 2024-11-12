@@ -24,7 +24,7 @@ define('DUP_CHALLENGE_URL', plugins_url('', DUP_CHALLENGE_FILE));
 
 // Define the root path of the WordPress installation.
 if (!defined('DUP_WP_ROOT_PATH')) {
-    define('DUP_WP_ROOT_PATH', ABSPATH);
+    define('DUP_WP_ROOT_PATH', untrailingslashit(ABSPATH));
 }
 
 // Define chunk size for file scanning
