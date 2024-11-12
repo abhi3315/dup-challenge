@@ -5,6 +5,7 @@ namespace DupChallenge;
 use DupChallenge\Controllers\TableController;
 use DupChallenge\Controllers\Tables\FileSystemNodesTable;
 use DupChallenge\Controllers\Tables\FileSystemClosureTable;
+use DupChallenge\Controllers\Crons\DirectoryScannerCron;
 
 /**
  * Install class
@@ -30,8 +31,12 @@ class Install
      */
     public static function onActivation()
     {
+        // Create tables
         $tableController = TableController::getInstance();
         $tableController->createTable(FileSystemNodesTable::getInstance());
         $tableController->createTable(FileSystemClosureTable::getInstance());
+
+        // Schedule cron
+        DirectoryScannerCron::getInstance()->schedule();
     }
 }
