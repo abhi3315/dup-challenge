@@ -7,6 +7,7 @@ use DupChallenge\Controllers\DirectoryScannerController;
 use DupChallenge\Controllers\Endpoints\StartScanEndpoint;
 use DupChallenge\Controllers\Endpoints\TreeViewEndpoint;
 use DupChallenge\Controllers\Crons\DirectoryScannerCron;
+use DupChallenge\Controllers\ScannerStatusController;
 
 class Bootstrap
 {
@@ -25,6 +26,8 @@ class Bootstrap
         add_action('rest_api_init', [__CLASS__, 'registerRestEndpoints']);
         add_action(DirectoryScannerCron::EVENT_HOOK, [DirectoryScannerCron::getInstance(), 'hookCallback']);
         add_action(DirectoryScannerController::EVENT_HOOK, [__CLASS__, 'hookScanEvent']);
+        add_action(DirectoryScannerController::ACTION_SCAN_START, [ScannerStatusController::getInstance(), 'updateStarted']);
+        add_action(DirectoryScannerController::ACTION_SCAN_END, [ScannerStatusController::getInstance(), 'updateFinished']);
     }
 
     /**
