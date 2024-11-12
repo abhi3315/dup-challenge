@@ -5,6 +5,7 @@ namespace DupChallenge;
 use DupChallenge\Controllers\TableController;
 use DupChallenge\Controllers\Tables\FileSystemNodesTable;
 use DupChallenge\Controllers\Tables\FileSystemClosureTable;
+use DupChallenge\Controllers\Crons\DirectoryScannerCron;
 
 /**
  * Uninstall class
@@ -30,12 +31,12 @@ class Unistall
      */
     public static function deactivate()
     {
+        // Drop tables
         $tableController = TableController::getInstance();
-
-        /**
-         * Drop closure table first as it has a foreign key constraint on nodes table
-         */
         $tableController->dropTable(FileSystemClosureTable::getInstance()->getName());
         $tableController->dropTable(FileSystemNodesTable::getInstance()->getName());
+
+        // Unschedule cron
+        DirectoryScannerCron::getInstance()->unschedule();
     }
 }
