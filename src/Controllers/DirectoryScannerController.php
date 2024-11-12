@@ -84,7 +84,18 @@ class DirectoryScannerController implements ScannerInterface
 
 		$root = new SPLFileInfo($rootPath);
 
-        $this->queue->enqueue(new ScannerQueueItem($root->getPathname(), $root->getFilename(), $root->getType()));
+        $this->queue->enqueue(
+			new ScannerQueueItem(
+				$root->getPathname(),
+				$root->getFilename(),
+				$root->getType(),
+				[],
+				0,
+				null,
+				$root->getSize(),
+				$root->getMTime()
+			)
+		);
         $this->queue->saveState();
 
         if (!wp_next_scheduled(self::EVENT_NAME)) {
@@ -319,6 +330,7 @@ class DirectoryScannerController implements ScannerInterface
     private function cleanup()
     {
         $this->queue->resetState();
+		wp_clear_scheduled_hook(self::EVENT_NAME);
 
         // Truncate tables and return the final status
         $closureTableTruncate = $this->tableController->truncateTable(FileSystemClosureTable::getInstance()->getName());

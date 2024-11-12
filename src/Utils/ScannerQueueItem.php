@@ -152,13 +152,17 @@ class ScannerQueueItem
     }
 
     /**
-     * Get the last modified time
+     * Get the last modified time timestamp
      *
-     * @return int Last modified time
+     * @return string Last modified time in Y-m-d H:i:s format
      */
     public function getLastModified()
     {
-        return $this->lastModified;
+		if ($this->lastModified) {
+			return date('Y-m-d H:i:s', $this->lastModified);
+		}
+
+		return null;
     }
 
     /**
