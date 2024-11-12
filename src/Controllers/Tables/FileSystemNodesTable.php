@@ -19,6 +19,7 @@ class FileSystemNodesTable implements TableInterface
     const COLUMN_PATH = 'path';
     const COLUMN_TYPE = 'type';
     const COLUMN_SIZE = 'size';
+	const COLUMN_PARENT_ID = 'parent_id';
     const COLUMN_NODE_COUNT = 'node_count';
     const COLUMN_LAST_MODIFIED = 'last_modified';
     const COLUMN_LAST_SCANNED = 'last_scanned';
@@ -64,6 +65,7 @@ class FileSystemNodesTable implements TableInterface
             self::COLUMN_PATH => 'VARCHAR(255) NOT NULL UNIQUE',
             self::COLUMN_TYPE => 'ENUM(\'' . implode("','", self::getFileTypes()) . '\') DEFAULT \'' . self::FILE_TYPE_UNKNOWN . '\'',
             self::COLUMN_SIZE => 'BIGINT UNSIGNED DEFAULT 0',
+			self::COLUMN_PARENT_ID => 'INT UNSIGNED DEFAULT NULL',
             self::COLUMN_NODE_COUNT => 'INT UNSIGNED DEFAULT 1',
             self::COLUMN_LAST_MODIFIED => 'DATETIME DEFAULT NULL',
             self::COLUMN_LAST_SCANNED => 'DATETIME DEFAULT CURRENT_TIMESTAMP',
@@ -87,7 +89,13 @@ class FileSystemNodesTable implements TableInterface
      */
     public function getForeignKey()
     {
-        return null; // No foreign keys for this table
+		return [
+			self::COLUMN_PARENT_ID => sprintf(
+				'%1$s(%2$s)',
+				$this->getName(),
+				self::COLUMN_ID
+			),
+		];
     }
 
     /**

@@ -241,7 +241,8 @@ class DirectoryScannerController implements ScannerInterface
                 FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
                 FileSystemNodesTable::COLUMN_NODE_COUNT => 1, // Node count for directories will be updated after the scan
                 FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
-                FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified()
+                FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified(),
+				FileSystemNodesTable::COLUMN_PARENT_ID => $item->getParent() ? $item->getParent()->getRecordId() : null
             ];
 
 
@@ -292,9 +293,9 @@ class DirectoryScannerController implements ScannerInterface
                 $inserted = $this->tableController->insertData(
                     FileSystemClosureTable::getInstance()->getName(),
                     [
-                    FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
-                    FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
-                    FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
+						FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
+						FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
+						FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
                     ]
                 );
 
@@ -389,13 +390,13 @@ class DirectoryScannerController implements ScannerInterface
         $nodesTable = FileSystemNodesTable::getInstance()->getName();
         $nodesClosureTable = FileSystemClosureTable::getInstance()->getName();
 
-        $dirQuery = "SELECT n1.id, SUM(n2.node_count) AS node_count, SUM(n2.size) AS size
-			FROM $nodesTable n1
-			JOIN $nodesTable n2
-			JOIN $nodesClosureTable c
-			ON n1.id = c.ancestor AND n2.id = c.descendant
-			WHERE n1.type = %s AND n1.id != n2.id
-			GROUP BY n1.id";
+        $dirQuery = "SELECT node1.id, SUM(node2.node_count) AS node_count, SUM(node2.size) AS size
+			FROM $nodesTable node1
+			JOIN $nodesTable node2
+			JOIN $nodesClosureTable closure
+			ON node1.id = closure.ancestor AND node2.id = closure.descendant
+			WHERE node1.type = %s AND node1.id != node2.id
+			GROUP BY node1.id";
 
         $directories = $wpdb->get_results($wpdb->prepare($dirQuery, FileSystemNodesTable::FILE_TYPE_DIR));
 
@@ -403,8 +404,8 @@ class DirectoryScannerController implements ScannerInterface
 			$result = $wpdb->update(
 				$nodesTable,
 				[
-				FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
-				FileSystemNodesTable::COLUMN_SIZE => $directory->size
+					FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
+					FileSystemNodesTable::COLUMN_SIZE => $directory->size
 				],
 				['id' => $directory->id],
 				['%d', '%d'],
@@ -428,63 +429,4 @@ class DirectoryScannerController implements ScannerInterface
     {
         error_log(sprintf(__('Error: %s', 'dup-challenge'), $message));
     }
-
-	/**
-	 * Get the tree
-	 * 
-	 * @param int $id The ID of the node to start the tree from. If not provided, the tree will start from the root.
-	 * @param int $depth The depth of the tree. If not provided, the entire tree will be returned.
-	 * 
-	 * @return array The tree nodes structure
-	 */
-	public function getTree($id = null, $depth = null)
-	{
-		global $wpdb;
-
-		$nodesTable = FileSystemNodesTable::getInstance()->getName();
-		$nodesClosureTable = FileSystemClosureTable::getInstance()->getName();
-
-		$columns = [
-			'n1.id',
-			'n1.path',
-			'n1.type',
-			'n1.node_count',
-			'n1.size',
-			'n1.last_modified'
-		];
-
-		$query = "SELECT " . implode(', ', $columns) . "
-			FROM $nodesTable n1
-			JOIN $nodesClosureTable c
-			ON n1.id = c.descendant";
-
-		$params = [];
-
-		if ($id) {
-			$query .= " WHERE c.ancestor = %d";
-			$params[] = $id;
-		}
-
-		if ($depth) {
-			$query .= " AND c.depth <= %d";
-			$params[] = $depth;
-		}
-
-		$nodes = $wpdb->get_results($wpdb->prepare($query, $params));
-
-		$tree = [];
-
-		foreach ($nodes as $node) {
-			$tree[] = [
-				'id' => $node->id,
-				'path' => $node->path,
-				'type' => $node->type,
-				'node_count' => $node->node_count,
-				'size' => $node->size,
-				'last_modified' => $node->last_modified
-			];
-		}
-
-		return $tree;
-	}
 }
