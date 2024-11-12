@@ -13,7 +13,7 @@ class Tree
      * Hashmap of nodes
      * Key is the node ID, value is the node object
      *
-     * @var array
+     * @var array<int, TreeNode>
      */
     private $nodes = [];
 
@@ -60,7 +60,7 @@ class Tree
     /**
      * Get the tree array
      *
-     * @return array The tree nodes structure
+     * @return array<string, mixed> The tree array
      */
     public function toArray()
     {

@@ -63,4 +63,13 @@ interface TableControllerInterface
      * @return bool True on success, false on failure
      */
     public function truncateTable($tableName);
+
+    /**
+     * Get count of rows in a table
+     *
+     * @param string $tableName The name of the table to count
+     *
+     * @return int The number of rows in the table
+     */
+    public function getRowCount($tableName);
 }

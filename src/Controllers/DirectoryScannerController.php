@@ -21,7 +21,7 @@ class DirectoryScannerController implements ScannerInterface
 {
     use SingletonTrait;
 
-    const EVENT_NAME = 'dup_challenge_process_scan_chunk';
+    const EVENT_HOOK = 'dup_challenge_process_scan_chunk';
     const ACTION_SCAN_START = 'dup_challenge_scan_start';
     const ACTION_SCAN_COMPLETE = 'dup_challenge_scan_complete';
 
@@ -98,8 +98,8 @@ class DirectoryScannerController implements ScannerInterface
         );
         $this->queue->saveState();
 
-        if (!wp_next_scheduled(self::EVENT_NAME)) {
-            wp_schedule_single_event(time() + $this->chunkProcessingGap, self::EVENT_NAME);
+        if (!wp_next_scheduled(self::EVENT_HOOK)) {
+            wp_schedule_single_event(time() + $this->chunkProcessingGap, self::EVENT_HOOK);
         }
 
         do_action(self::ACTION_SCAN_START);
@@ -133,7 +133,7 @@ class DirectoryScannerController implements ScannerInterface
         }
 
         $this->queue->saveState();
-        wp_schedule_single_event(time() + $this->chunkProcessingGap, self::EVENT_NAME);
+        wp_schedule_single_event(time() + $this->chunkProcessingGap, self::EVENT_HOOK);
     }
 
     /**
@@ -347,7 +347,7 @@ class DirectoryScannerController implements ScannerInterface
     private function cleanup()
     {
         $this->queue->resetState();
-        wp_clear_scheduled_hook(self::EVENT_NAME);
+        wp_clear_scheduled_hook(self::EVENT_HOOK);
 
         // Truncate tables and return the final status
         $closureTableTruncate = $this->tableController->truncateTable(FileSystemClosureTable::getInstance()->getName());
@@ -365,7 +365,7 @@ class DirectoryScannerController implements ScannerInterface
     {
         $this->queue->resetState();
         delete_transient(ScanQueueController::TRANSIENT_NAME);
-        wp_clear_scheduled_hook(self::EVENT_NAME);
+        wp_clear_scheduled_hook(self::EVENT_HOOK);
 
         // Update the node count and size for directories
         $this->updateDirectoryNodeCountAndSize();

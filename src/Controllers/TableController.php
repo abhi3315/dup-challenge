@@ -209,4 +209,20 @@ class TableController implements TableControllerInterface
 
         return boolval($result);
     }
+
+    /**
+     * Get count of rows in a table
+     *
+     * @param string $tableName The name of the table to count
+     *
+     * @return int The number of rows in the table
+     */
+    public function getRowCount($tableName)
+    {
+        global $wpdb;
+
+        $query = $wpdb->prepare("SELECT COUNT(*) FROM {$tableName}");
+
+        return intval($wpdb->get_var($query));
+    }
 }
