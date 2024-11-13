@@ -13,7 +13,7 @@ use DupChallenge\Controllers\ScannerStatusController;
 /**
  * Start status endpoint
  */
-class ScanStatus implements RestEndpointInterface
+class ScanStatusEndpoint implements RestEndpointInterface
 {
     use SingletonTrait;
 

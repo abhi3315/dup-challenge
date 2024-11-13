@@ -39,22 +39,23 @@ class TreeViewEndpoint implements RestEndpointInterface
                 'id' => [
                     'required' => false,
                     'type' => 'integer',
-                    'description' => 'The ID of the node to start the tree from. If not provided, the tree will start from the root.',
+                    'description' => __('The ID of the node to start the tree from. If not provided, the tree will start from the root.', 'dup-challenge'),
                     'validate_callback' => [$this, 'validatePositiveNumeric']
                 ],
                 'depth' => [
                     'required' => false,
                     'type' => 'integer',
-                    'description' => 'The depth of the tree. If not provided, the entire tree will be returned.',
+                    'description' => __('The depth of the tree. If not provided, the entire tree will be returned.', 'dup-challenge'),
                     'validate_callback' => [$this, 'validatePositiveNumeric']
                 ],
                 'view' => [
                     'required' => false,
                     'type' => 'string',
-                    'description' => 'The view to render the tree with. If not provided, the default view will be flat.',
+                    'description' => __('The view to render the tree with. If not provided, the default view will be flat.', 'dup-challenge'),
                     'default' => 'flat',
                     'enum' => ['flat', 'nested'],
                     'sanitize_callback' => 'sanitize_text_field',
+                    'validate_callback' => 'rest_validate_request_arg',
                 ]
             ]
         ]);
@@ -102,7 +103,7 @@ class TreeViewEndpoint implements RestEndpointInterface
     public function validatePositiveNumeric($value)
     {
         if (!is_numeric($value) || $value < 0) {
-            return new WP_Error('rest_invalid_param', 'The value must be a positive number', ['status' => 400]);
+            return new WP_Error('rest_invalid_param', __('The value must be a positive number', 'dup-challenge'), ['status' => 400]);
         }
 
         return true;

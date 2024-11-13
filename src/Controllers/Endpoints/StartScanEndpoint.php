@@ -60,7 +60,7 @@ class StartScanEndpoint implements RestEndpointInterface
     public function permissionCallback()
     {
         if (!current_user_can('manage_options')) {
-            return new WP_Error('rest_forbidden', __('You do not have permission to access this resource.', 'duplicator-challenge'), ['status' => 403]);
+            return new WP_Error('rest_forbidden', __('You do not have permission to access this resource.', 'dup-challenge'), ['status' => 403]);
         }
 
         return true;

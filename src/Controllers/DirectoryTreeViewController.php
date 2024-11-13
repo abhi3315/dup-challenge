@@ -16,7 +16,7 @@ class DirectoryTreeViewController
     use SingletonTrait;
 
     /**
-     * Get node ID by path
+     * Get node ID by exact path
      *
      * @param string $path The path of the node
      *
@@ -208,5 +208,45 @@ class DirectoryTreeViewController
             && isset($node->size)
             && isset($node->last_modified)
             && isset($node->depth);
+    }
+
+    /**
+     * Search nodes by path
+     *
+     * @param string $path The path of the node. It may have wildcards
+     *
+     * @return array<string, mixed> The node object
+     */
+    public function searchByPath($path)
+    {
+        global $wpdb;
+
+        $nodesTable = FileSystemNodesTable::getInstance()->getName();
+
+        $query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " LIKE %s";
+
+        $nodes = $wpdb->get_results($wpdb->prepare($query, $path));
+
+        $results = [];
+
+        foreach ($nodes as $node) {
+            if (!$this->isValidNodeObject($node)) {
+                continue;
+            }
+
+            $results[] = [
+                'id' => $node->id,
+                'name' => $node->name,
+                'path' => $node->path,
+                'type' => $node->type,
+                'node_count' => $node->node_count,
+                'parent_id' => $node->parent_id,
+                'size' => $node->size,
+                'last_modified' => $node->last_modified,
+                'depth' => $node->depth
+            ];
+        }
+
+        return $results;
     }
 }
