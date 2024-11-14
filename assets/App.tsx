@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
  * Internal dependencies
  */
 import SettingsPage from "./pages/SettingsPage";
+import MainPage from "./pages/MainPage";
 
 const theme = createTheme({
 	palette: {
@@ -39,6 +40,7 @@ const App = () => (
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
 			{currentPage === "duplicator-challenge-settings" && <SettingsPage />}
+			{currentPage === "duplicator-challenge" && <MainPage />}
 		</ThemeProvider>
 	</QueryClientProvider>
 );

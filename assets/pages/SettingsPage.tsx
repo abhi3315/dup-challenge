@@ -63,7 +63,7 @@ const ScanPage = (): JSX.Element => {
 	}, [cronQuery.data]);
 
 	return (
-		<div>
+		<>
 			<h2 className="mb-4 text-3xl font-bold text-gray-800">
 				{__("Settings", "dup-challenge")}
 			</h2>
@@ -129,7 +129,7 @@ const ScanPage = (): JSX.Element => {
 							</td>
 							<td className="px-4 py-2 pl-12">
 								{scanQuery?.data?.finishedAt ? (
-									new Date(scanQuery?.data?.finishedAt).toLocaleString()
+									new Date(scanQuery?.data?.finishedAt * 1000).toLocaleString()
 								) : (
 									<span className="text-gray-400 italic">N/A</span>
 								)}
@@ -212,7 +212,7 @@ const ScanPage = (): JSX.Element => {
 					</table>
 				)}
 			</div>
-		</div>
+		</>
 	);
 };
 
