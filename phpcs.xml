@@ -34,4 +34,10 @@
 
 	<config name="testVersion" value="5.6-"/>
 	<rule ref="PHPCompatibilityWP" />
+
+	<rule ref="WordPress.Arrays.MultipleStatementAlignment">
+		<properties>
+			<property name="maxColumn" value="1000" />
+		</properties>
+	</rule>
 </ruleset>
