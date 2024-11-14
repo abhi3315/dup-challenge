@@ -33,7 +33,7 @@ interface RichTreeItem {
 const parseTreeItems = (item: TreeItem): RichTreeItem => {
 	const { size, nodeCount, name } = item;
 
-	let label = `${name} (${nodeCount} nodes)`;
+	let label = `${name} (${nodeCount} items)`;
 
 	if (size) {
 		label = `${label} - ${size} bytes`;
