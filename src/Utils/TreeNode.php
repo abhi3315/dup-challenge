@@ -158,16 +158,16 @@ class TreeNode
         }
 
         return [
-            'id'            => $this->id,
-            'path'          => $this->path,
-            'name'          => $this->name,
-            'type'          => $this->type,
+            'id'           => $this->id,
+            'path'         => $this->path,
+            'name'         => $this->name,
+            'type'         => $this->type,
             'nodeCount'    => $this->nodeCount,
-            'parent'        => $this->parent ? $this->parent->getId() : null,
-            'size'          => $this->size,
+            'parent'       => $this->parent ? $this->parent->getId() : null,
+            'size'         => $this->size,
             'lastModified' => $this->lastModified,
-            'depth'         => $this->depth,
-            'children'      => $children
+            'depth'        => $this->depth,
+            'children'     => $children
         ];
     }
 }

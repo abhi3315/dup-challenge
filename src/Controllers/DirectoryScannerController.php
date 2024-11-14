@@ -463,16 +463,16 @@ class DirectoryScannerController implements ScannerInterface
             }
         }
 
-		// Update the node count to zero for empty directories
-		$emptyDirQuery = "UPDATE $nodesTable
+        // Update the node count to zero for empty directories
+        $emptyDirQuery = "UPDATE $nodesTable
 			SET node_count = 0
 			WHERE type = %s AND id NOT IN (SELECT ancestor FROM $nodesClosureTable WHERE descendant != ancestor)";
 
-		$result = $wpdb->query($wpdb->prepare($emptyDirQuery, FileSystemNodesTable::FILE_TYPE_DIR));
+        $result = $wpdb->query($wpdb->prepare($emptyDirQuery, FileSystemNodesTable::FILE_TYPE_DIR));
 
-		if ($result === false) {
-			$this->logError(__('Failed to update node count for empty directories', 'dup-challenge'));
-		}
+        if ($result === false) {
+            $this->logError(__('Failed to update node count for empty directories', 'dup-challenge'));
+        }
     }
 
     /**

@@ -73,7 +73,7 @@ class DirectoryScannerCron implements CronInterface
     /**
      * Get cron interval
      *
-     * @return string
+     * @return int Cron interval
      */
     public function getCronInterval()
     {
@@ -83,7 +83,7 @@ class DirectoryScannerCron implements CronInterface
     /**
      * Get cron enabled
      *
-     * @return bool
+     * @return bool Cron enabled
      */
     public function isCronEnabled()
     {

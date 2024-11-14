@@ -148,7 +148,7 @@ class DirectoryTreeViewController
      *
      * @param array<object> $nodes The tree nodes
      *
-     * @return array<string, mixed> The nested tree nodes structure
+     * @return array<string, mixed>|null The nested tree nodes structure
      */
     private function buildNestedTree(array $nodes)
     {
@@ -201,8 +201,8 @@ class DirectoryTreeViewController
     /**
      * Search nodes by path
      *
-     * @param string $path The path of the node. It may have wildcards
-	 * @param int $limit The limit of the search results
+     * @param string $path  The path of the node. It may have wildcards
+     * @param int    $limit The limit of the search results
      *
      * @return array<string, mixed> The node object
      */
@@ -238,42 +238,42 @@ class DirectoryTreeViewController
         return $results;
     }
 
-	/**
-	 * Search nodes by exact path or name
-	 * 
-	 * @param string $path The exact path of the node
-	 * 
-	 * @return array<string, mixed> The node object
-	 */
-	public function searchByExactPathOrName($path)
-	{
-		global $wpdb;
+    /**
+     * Search nodes by exact path or name
+     *
+     * @param string $path The exact path of the node
+     *
+     * @return array<string, mixed> The node object
+     */
+    public function searchByExactPathOrName($path)
+    {
+        global $wpdb;
 
-		$nodesTable = FileSystemNodesTable::getInstance()->getName();
+        $nodesTable = FileSystemNodesTable::getInstance()->getName();
 
-		$query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " = %s" . " OR " . FileSystemNodesTable::COLUMN_NAME . " = %s";
+        $query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " = %s" . " OR " . FileSystemNodesTable::COLUMN_NAME . " = %s";
 
-		$nodes = $wpdb->get_results($wpdb->prepare($query, $path, $path));
+        $nodes = $wpdb->get_results($wpdb->prepare($query, $path, $path));
 
-		$results = [];
+        $results = [];
 
-		foreach ($nodes as $node) {
-			if (!$this->isValidNodeObject($node)) {
-				continue;
-			}
+        foreach ($nodes as $node) {
+            if (!$this->isValidNodeObject($node)) {
+                continue;
+            }
 
-			$results[] = [
-				'id'           => $node->id,
-				'name'         => $node->name,
-				'path'         => $node->path,
-				'type'         => $node->type,
-				'nodeCount'    => $node->node_count,
-				'parentId'     => $node->parent_id,
-				'size'         => $node->size,
-				'lastModified' => $node->last_modified,
-			];
-		}
+            $results[] = [
+                'id'           => $node->id,
+                'name'         => $node->name,
+                'path'         => $node->path,
+                'type'         => $node->type,
+                'nodeCount'    => $node->node_count,
+                'parentId'     => $node->parent_id,
+                'size'         => $node->size,
+                'lastModified' => $node->last_modified,
+            ];
+        }
 
-		return $results;
-	}
+        return $results;
+    }
 }

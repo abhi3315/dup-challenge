@@ -49,13 +49,13 @@ class SearchEndpoint implements RestEndpointInterface
                     'default'           => false,
                     'validate_callback' => 'rest_validate_request_arg',
                 ],
-				'limit' => [
-					'required'          => false,
-					'type'              => 'integer',
-					'description'       => __('The maximum number of results to return.', 'dup-challenge'),
-					'default'           => 10,
-					'validate_callback' => 'rest_validate_request_arg',
-				],
+                'limit' => [
+                    'required'          => false,
+                    'type'              => 'integer',
+                    'description'       => __('The maximum number of results to return.', 'dup-challenge'),
+                    'default'           => 10,
+                    'validate_callback' => 'rest_validate_request_arg',
+                ],
             ],
         ]);
     }
@@ -70,12 +70,12 @@ class SearchEndpoint implements RestEndpointInterface
     public function handleRequest(WP_REST_Request $request)
     {
         $query = $request->get_param('query');
-		$exact = $request->get_param('exact');
-		$limit = $request->get_param('limit');
+        $exact = $request->get_param('exact');
+        $limit = $request->get_param('limit');
 
-		if(!isset($limit) || !is_numeric($limit) || $limit < 1) {
-			$limit = 10;
-		}
+        if (!isset($limit) || !is_numeric($limit) || $limit < 1) {
+            $limit = 10;
+        }
 
         $results = $this->search($query, $exact, $limit);
 
@@ -112,19 +112,19 @@ class SearchEndpoint implements RestEndpointInterface
      * Search for files and directories
      *
      * @param string $query The search query
-	 * @param bool $exact Whether to search for exact match or not
-	 * @param int $limit The maximum number of results to return
+     * @param bool   $exact Whether to search for exact match or not
+     * @param int    $limit The maximum number of results to return
      *
      * @return array<string, mixed> The search results
      */
     private function search($query, $exact, $limit)
     {
-		if (isset($exact) && boolval($exact)) {
-			return DirectoryTreeViewController::getInstance()->searchByExactPathOrName($query);
-		}
+        if (boolval($exact)) {
+            return DirectoryTreeViewController::getInstance()->searchByExactPathOrName($query);
+        }
 
-		// Add support for wildcards
-		$query = '%' . $query . '%';
-        return DirectoryTreeViewController::getInstance()->searchByPath($query);
+        // Add support for wildcards
+        $query = '%' . $query . '%';
+        return DirectoryTreeViewController::getInstance()->searchByPath($query, $limit);
     }
 }

@@ -39,7 +39,10 @@ class TreeViewEndpoint implements RestEndpointInterface
                 'id'    => [
                     'required'          => false,
                     'type'              => 'integer',
-                    'description'       => __('The ID of the node to start the tree from. If not provided, the tree will start from the root.', 'dup-challenge'),
+                    'description'       => __(
+                        'The ID of the node to start the tree from. If not provided, the tree will start from the root.',
+                        'dup-challenge'
+                    ),
                     'validate_callback' => [$this, 'validatePositiveNumeric']
                 ],
                 'depth' => [

@@ -64,9 +64,9 @@ class Tree
      */
     public function toArray()
     {
-		if (!isset($this->root)) {
-			return null;
-		}
+        if (!isset($this->root)) {
+            return null;
+        }
 
         return $this->root->toArray();
     }
