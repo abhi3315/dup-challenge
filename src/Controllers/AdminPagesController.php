@@ -30,23 +30,18 @@ class AdminPagesController
         }
 
         wp_enqueue_script(
-            'duplicator-challenge-main-scripts',
+            'duplicator-challenge-admin-scripts',
             DUP_CHALLENGE_URL . '/dist/index.js',
             [],
             DUP_CHALLENGE_VERSION,
             true
         );
 
-        wp_enqueue_style(
-            'duplicator-challenge-main-styles',
-            DUP_CHALLENGE_URL . '/dist/index.css',
-            [],
-            DUP_CHALLENGE_VERSION
-        );
-
-        wp_localize_script('duplicator-challenge-admin-scripts', 'dupChallengeRest', [
-            'root' => esc_url_raw(rest_url(RestEndpointInterface::ENDPOINT_NAMESPACE)),
+        wp_localize_script('duplicator-challenge-admin-scripts', 'dupChallengeData', [
+            'restRootUrl' => esc_url_raw(rest_url(RestEndpointInterface::ENDPOINT_NAMESPACE)),
             'nonce' => wp_create_nonce('wp_rest'),
+            'rootDir' => DUP_WP_ROOT_PATH,
+            'currentPage' => sanitize_text_field((isset($_REQUEST['page']) ? $_REQUEST['page'] : '')),
         ]);
     }
 
@@ -63,7 +58,7 @@ class AdminPagesController
 
         wp_enqueue_style(
             'duplicator-challenge-admin-styles',
-            DUP_CHALLENGE_URL . '/assets/css/admin.css',
+            DUP_CHALLENGE_URL . '/dist/index.css',
             [],
             DUP_CHALLENGE_VERSION
         );
