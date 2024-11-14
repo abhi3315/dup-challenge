@@ -3,7 +3,7 @@
  */
 import axios, { AxiosInstance } from "axios";
 
-const { restRootUrl, rootDir, nonce } = window.dupChallengeData;
+const { restRootUrl, nonce } = window.dupChallengeData;
 
 /**
  * Fetch instance
