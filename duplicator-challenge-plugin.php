@@ -2,15 +2,14 @@
 
 /**
  * Plugin Name: Duplicator Challenge Plugin
- * Plugin URI:
+ * Plugin URI: https://github.com/abhi3315/dup-challenge
  * Description: Duplicator Challenge Plugin
  * Version: 1.0.0
  * Requires at least: 5.2
  * Tested up to: 6.2.2
  * Requires PHP: 5.6.20
- * Author:
- * Author URI:
- * Update URI:
+ * Author: Abhishek Sharma
+ * Author URI: https://github.com/abhi3315
  * Text Domain: dup-challenge
  */
 
@@ -29,12 +28,12 @@ if (!defined('DUP_WP_ROOT_PATH')) {
 
 // Define chunk size for file scanning
 if (!defined('DUP_CHUNK_SIZE')) {
-    define('DUP_CHUNK_SIZE', 1000);
+    define('DUP_CHUNK_SIZE', 500);
 }
 
 // Define chunk processing time gap in seconds
 if (!defined('DUP_CHUNK_PROCESSING_GAP')) {
-    define('DUP_CHUNK_PROCESSING_GAP', 2);
+    define('DUP_CHUNK_PROCESSING_GAP', 1);
 }
 
 require_once(DUP_CHALLENGE_PATH . '/src/Utils/Autoloader.php');
