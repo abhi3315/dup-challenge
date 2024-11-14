@@ -190,6 +190,13 @@ class DirectoryScannerController implements ScannerInterface
      */
     private function enqueueChildDirectories(ScannerQueueItem $parentItem)
     {
+        $path = $parentItem->getPath();
+
+        if (!is_dir($path)) {
+            $this->logError(sprintf(__('Skipping non-directory: %s', 'dup-challenge'), $path));
+            return;
+        }
+
         $iterator = new RecursiveDirectoryIterator($parentItem->getPath(), RecursiveDirectoryIterator::SKIP_DOTS);
 
         foreach ($iterator as $child) {
