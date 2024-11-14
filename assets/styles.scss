@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dup-challenge-settings-container {
+	// Reset WordPress default input styles
+	input[type="text"],
+	input[type="email"],
+	input[type="password"],
+	input[type="url"],
+	input[type="tel"],
+	input[type="number"] {
+		padding: unset;
+		line-height: unset;
+		min-height: unset;
+		box-shadow: unset;
+		border-radius: unset;
+		border: unset;
+		background-color: unset;
+		color: unset;
+	}
+}
