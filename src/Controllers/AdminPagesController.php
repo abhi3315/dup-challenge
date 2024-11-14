@@ -39,8 +39,8 @@ class AdminPagesController
 
         wp_localize_script('duplicator-challenge-admin-scripts', 'dupChallengeData', [
             'restRootUrl' => esc_url_raw(rest_url(RestEndpointInterface::ENDPOINT_NAMESPACE)),
-            'nonce' => wp_create_nonce('wp_rest'),
-            'rootDir' => DUP_WP_ROOT_PATH,
+            'nonce'       => wp_create_nonce('wp_rest'),
+            'rootDir'     => DUP_WP_ROOT_PATH,
             'currentPage' => sanitize_text_field((isset($_REQUEST['page']) ? $_REQUEST['page'] : '')),
         ]);
     }

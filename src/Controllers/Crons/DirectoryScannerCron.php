@@ -119,7 +119,7 @@ class DirectoryScannerCron implements CronInterface
 
         $schedule[self::CRON_RECURRING_INTERVAL] = [
             'interval' => $interval * HOUR_IN_SECONDS,
-            'display' => sprintf(__('Every %d hours', 'dup-challenge'), $interval),
+            'display'  => sprintf(__('Every %d hours', 'dup-challenge'), $interval),
         ];
 
         return $schedule;

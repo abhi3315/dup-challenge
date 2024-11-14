@@ -32,28 +32,28 @@ class TreeViewEndpoint implements RestEndpointInterface
     public function register()
     {
         register_rest_route(self::ENDPOINT_NAMESPACE, $this->route, [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'handleRequest'],
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'handleRequest'],
             'permission_callback' => [$this, 'permissionCallback'],
-            'args' => [
-                'id' => [
-                    'required' => false,
-                    'type' => 'integer',
-                    'description' => __('The ID of the node to start the tree from. If not provided, the tree will start from the root.', 'dup-challenge'),
+            'args'                => [
+                'id'    => [
+                    'required'          => false,
+                    'type'              => 'integer',
+                    'description'       => __('The ID of the node to start the tree from. If not provided, the tree will start from the root.', 'dup-challenge'),
                     'validate_callback' => [$this, 'validatePositiveNumeric']
                 ],
                 'depth' => [
-                    'required' => false,
-                    'type' => 'integer',
-                    'description' => __('The depth of the tree. If not provided, the entire tree will be returned.', 'dup-challenge'),
+                    'required'          => false,
+                    'type'              => 'integer',
+                    'description'       => __('The depth of the tree. If not provided, the entire tree will be returned.', 'dup-challenge'),
                     'validate_callback' => [$this, 'validatePositiveNumeric']
                 ],
-                'view' => [
-                    'required' => false,
-                    'type' => 'string',
-                    'description' => __('The view to render the tree with. If not provided, the default view will be flat.', 'dup-challenge'),
-                    'default' => 'flat',
-                    'enum' => ['flat', 'nested'],
+                'view'  => [
+                    'required'          => false,
+                    'type'              => 'string',
+                    'description'       => __('The view to render the tree with. If not provided, the default view will be flat.', 'dup-challenge'),
+                    'default'           => 'flat',
+                    'enum'              => ['flat', 'nested'],
                     'sanitize_callback' => 'sanitize_text_field',
                     'validate_callback' => 'rest_validate_request_arg',
                 ]

@@ -45,10 +45,10 @@ class FileSystemClosureTable implements TableInterface
     public function getSchema()
     {
         return [
-            self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
-            self::COLUMN_ANCESTOR => 'INT UNSIGNED NOT NULL',
+            self::COLUMN_ID         => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
+            self::COLUMN_ANCESTOR   => 'INT UNSIGNED NOT NULL',
             self::COLUMN_DESCENDANT => 'INT UNSIGNED NOT NULL',
-            self::COLUMN_DEPTH => 'INT UNSIGNED NOT NULL',
+            self::COLUMN_DEPTH      => 'INT UNSIGNED NOT NULL',
         ];
     }
 
@@ -70,7 +70,7 @@ class FileSystemClosureTable implements TableInterface
     public function getForeignKey()
     {
         return [
-            self::COLUMN_ANCESTOR => $this->getForeignKeyDefinition(),
+            self::COLUMN_ANCESTOR   => $this->getForeignKeyDefinition(),
             self::COLUMN_DESCENDANT => $this->getForeignKeyDefinition(),
         ];
     }

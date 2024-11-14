@@ -33,24 +33,24 @@ class ScannerCronEndpoint implements RestEndpointInterface
     {
         register_rest_route(self::ENDPOINT_NAMESPACE, $this->route, [
             [
-                'methods' => WP_REST_Server::READABLE,
-                'callback' => [$this, 'handleRequest'],
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [$this, 'handleRequest'],
                 'permission_callback' => [$this, 'permissionCallback'],
             ],
             [
-                'methods' => WP_REST_Server::EDITABLE,
-                'callback' => [$this, 'handleRequest'],
+                'methods'             => WP_REST_Server::EDITABLE,
+                'callback'            => [$this, 'handleRequest'],
                 'permission_callback' => [$this, 'permissionCallback'],
-                'args' => [
+                'args'                => [
                     'interval' => [
-                        'type' => 'integer',
-                        'default' => 1,
-                        'required' => false,
+                        'type'              => 'integer',
+                        'default'           => 1,
+                        'required'          => false,
                         'validate_callback' => [$this, 'validateInterval']
                     ],
-                    'enabled' => [
-                        'type' => 'boolean',
-                        'required' => true,
+                    'enabled'  => [
+                        'type'              => 'boolean',
+                        'required'          => true,
                         'validate_callback' => 'rest_validate_request_arg'
                     ]
                 ]
@@ -73,7 +73,7 @@ class ScannerCronEndpoint implements RestEndpointInterface
 
             return new WP_REST_Response([
                 'interval' => $interval,
-                'enabled' => $enabled
+                'enabled'  => $enabled
             ], 200);
         }
 

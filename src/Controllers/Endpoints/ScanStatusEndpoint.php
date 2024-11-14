@@ -32,8 +32,8 @@ class ScanStatusEndpoint implements RestEndpointInterface
     public function register()
     {
         register_rest_route(self::ENDPOINT_NAMESPACE, $this->route, [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'handleRequest'],
+            'methods'             => WP_REST_Server::READABLE,
+            'callback'            => [$this, 'handleRequest'],
             'permission_callback' => [$this, 'permissionCallback']
         ]);
     }

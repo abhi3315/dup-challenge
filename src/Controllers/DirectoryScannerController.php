@@ -259,13 +259,13 @@ class DirectoryScannerController implements ScannerInterface
         try {
             // Prepare the data to insert
             $data = [
-                FileSystemNodesTable::COLUMN_PATH => $item->getPath(),
-                FileSystemNodesTable::COLUMN_NAME => $item->getName(),
-                FileSystemNodesTable::COLUMN_TYPE => $this->getNodeFileType($item),
-                FileSystemNodesTable::COLUMN_NODE_COUNT => 1, // Node count for directories will be updated after the scan
-                FileSystemNodesTable::COLUMN_SIZE => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
+                FileSystemNodesTable::COLUMN_PATH          => $item->getPath(),
+                FileSystemNodesTable::COLUMN_NAME          => $item->getName(),
+                FileSystemNodesTable::COLUMN_TYPE          => $this->getNodeFileType($item),
+                FileSystemNodesTable::COLUMN_NODE_COUNT    => 1, // Node count for directories will be updated after the scan
+                FileSystemNodesTable::COLUMN_SIZE          => $item->isDir() ? 0 : $item->getSize(), // Size for directories will be updated after the scan
                 FileSystemNodesTable::COLUMN_LAST_MODIFIED => $item->getLastModified(),
-                FileSystemNodesTable::COLUMN_PARENT_ID => $item->getParent() ? $item->getParent()->getRecordId() : null
+                FileSystemNodesTable::COLUMN_PARENT_ID     => $item->getParent() ? $item->getParent()->getRecordId() : null
             ];
 
             // Insert the node
@@ -319,9 +319,9 @@ class DirectoryScannerController implements ScannerInterface
                 $inserted = $this->tableController->insertData(
                     FileSystemClosureTable::getInstance()->getName(),
                     [
-                        FileSystemClosureTable::COLUMN_ANCESTOR => $ancestorId,
+                        FileSystemClosureTable::COLUMN_ANCESTOR   => $ancestorId,
                         FileSystemClosureTable::COLUMN_DESCENDANT => $decendantId,
-                        FileSystemClosureTable::COLUMN_DEPTH => $item->getDepthRelativeTo($ancestor)
+                        FileSystemClosureTable::COLUMN_DEPTH      => $item->getDepthRelativeTo($ancestor)
                     ]
                 );
 
@@ -451,7 +451,7 @@ class DirectoryScannerController implements ScannerInterface
                 $nodesTable,
                 [
                     FileSystemNodesTable::COLUMN_NODE_COUNT => $directory->node_count,
-                    FileSystemNodesTable::COLUMN_SIZE => $directory->size
+                    FileSystemNodesTable::COLUMN_SIZE       => $directory->size
                 ],
                 ['id' => $directory->id],
                 ['%d', '%d'],

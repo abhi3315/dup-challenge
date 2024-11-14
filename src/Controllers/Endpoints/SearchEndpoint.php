@@ -42,6 +42,13 @@ class SearchEndpoint implements RestEndpointInterface
                     'description'       => __('The search query for path. It can include wildcards (%, _, etc).', 'dup-challenge'),
                     'validate_callback' => [ $this, 'validateSearchQuery' ],
                 ],
+                'exact' => [
+                    'required'          => false,
+                    'type'              => 'boolean',
+                    'description'       => __('Whether to search for exact match or not.', 'dup-challenge'),
+                    'default'           => false,
+                    'validate_callback' => 'rest_validate_request_arg',
+                ],
             ],
         ]);
     }

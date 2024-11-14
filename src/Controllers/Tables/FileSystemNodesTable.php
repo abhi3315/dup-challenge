@@ -62,15 +62,15 @@ class FileSystemNodesTable implements TableInterface
     public function getSchema()
     {
         return [
-            self::COLUMN_ID => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
-            self::COLUMN_PATH => 'VARCHAR(255) NOT NULL UNIQUE',
-            self::COLUMN_NAME => 'VARCHAR(255) NOT NULL',
-            self::COLUMN_TYPE => 'ENUM(\'' . implode("','", self::getFileTypes()) . '\') DEFAULT \'' . self::FILE_TYPE_UNKNOWN . '\'',
-            self::COLUMN_SIZE => 'BIGINT UNSIGNED DEFAULT 0',
-            self::COLUMN_PARENT_ID => 'INT UNSIGNED DEFAULT NULL',
-            self::COLUMN_NODE_COUNT => 'INT UNSIGNED DEFAULT 1',
+            self::COLUMN_ID            => 'INT UNSIGNED NOT NULL AUTO_INCREMENT',
+            self::COLUMN_PATH          => 'VARCHAR(255) NOT NULL UNIQUE',
+            self::COLUMN_NAME          => 'VARCHAR(255) NOT NULL',
+            self::COLUMN_TYPE          => 'ENUM(\'' . implode("','", self::getFileTypes()) . '\') DEFAULT \'' . self::FILE_TYPE_UNKNOWN . '\'',
+            self::COLUMN_SIZE          => 'BIGINT UNSIGNED DEFAULT 0',
+            self::COLUMN_PARENT_ID     => 'INT UNSIGNED DEFAULT NULL',
+            self::COLUMN_NODE_COUNT    => 'INT UNSIGNED DEFAULT 1',
             self::COLUMN_LAST_MODIFIED => 'DATETIME DEFAULT NULL',
-            self::COLUMN_LAST_SCANNED => 'DATETIME DEFAULT CURRENT_TIMESTAMP',
+            self::COLUMN_LAST_SCANNED  => 'DATETIME DEFAULT CURRENT_TIMESTAMP',
         ];
     }
 

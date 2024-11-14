@@ -1,0 +1,175 @@
+ ------ --------------------------------------------------------------------- 
+  Line   src/Controllers/AdminPagesController.php                             
+ ------ --------------------------------------------------------------------- 
+  :34    Constant DUP_CHALLENGE_URL not found.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+  :43    Constant DUP_WP_ROOT_PATH not found.                                 
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+  :61    Constant DUP_CHALLENGE_URL not found.                                
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+ ------ --------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------- 
+  Line   src/Controllers/Crons/DirectoryScannerCron.php                               
+ ------ ----------------------------------------------------------------------------- 
+  :49    Binary operation "*" between string and 3600 results in an error.            
+  :80    Method                                                                       
+         DupChallenge\Controllers\Crons\DirectoryScannerCron::getCronInterval()       
+         should return string but returns mixed.                                      
+  :121   Binary operation "*" between string and 3600 results in an error.            
+  :125   Method                                                                       
+         DupChallenge\Controllers\Crons\DirectoryScannerCron::addRecurringInterval()  
+         should return array<string, string> but returns array<string, mixed>.        
+ ------ ----------------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   src/Controllers/DirectoryScannerController.php                       
+ ------ --------------------------------------------------------------------- 
+  :74    Constant DUP_WP_ROOT_PATH not found.                                 
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols  
+  :128   Parameter #1 $item of method                                         
+         DupChallenge\Controllers\DirectoryScannerController::processItem()   
+         expects DupChallenge\Utils\ScannerQueueItem, mixed given.            
+ ------ --------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------- 
+  Line   src/Controllers/DirectoryTreeViewController.php                           
+ ------ -------------------------------------------------------------------------- 
+  :131   Access to an undefined property object::$id.                              
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :132   Access to an undefined property object::$name.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :133   Access to an undefined property object::$path.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :134   Access to an undefined property object::$type.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :135   Access to an undefined property object::$node_count.                      
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :136   Access to an undefined property object::$parent_id.                       
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :137   Access to an undefined property object::$size.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :138   Access to an undefined property object::$last_modified.                   
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :139   Access to an undefined property object::$depth.                           
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :143   Method                                                                    
+         DupChallenge\Controllers\DirectoryTreeViewController::buildFlatTree()     
+         should return array<string, mixed> but returns array<int<0, max>,         
+         array<string, mixed>>.                                                    
+  :162   Access to an undefined property object::$parent_id.                       
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :165   Access to an undefined property object::$id.                              
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :166   Access to an undefined property object::$path.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :167   Access to an undefined property object::$name.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :168   Access to an undefined property object::$type.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :169   Access to an undefined property object::$node_count.                      
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :171   Access to an undefined property object::$size.                            
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :172   Access to an undefined property object::$last_modified.                   
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :173   Access to an undefined property object::$depth.                           
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  :237   Method                                                                    
+         DupChallenge\Controllers\DirectoryTreeViewController::searchByPath()      
+         should return array<string, mixed> but returns array<int<0, max>,         
+         array<string, mixed>>.                                                    
+ ------ -------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------ 
+  Line   src/Controllers/Endpoints/ScanStatusEndpoint.php                        
+ ------ ------------------------------------------------------------------------ 
+  :48    Method                                                                  
+         DupChallenge\Controllers\Endpoints\ScanStatusEndpoint::handleRequest()  
+         has parameter $request with generic class WP_REST_Request but does      
+         not specify its types: T                                                
+ ------ ------------------------------------------------------------------------ 
+
+ ------ ------------------------------------------------------------------------- 
+  Line   src/Controllers/Endpoints/ScannerCronEndpoint.php                        
+ ------ ------------------------------------------------------------------------- 
+  :68    Method                                                                   
+         DupChallenge\Controllers\Endpoints\ScannerCronEndpoint::handleRequest()  
+         has parameter $request with generic class WP_REST_Request but does       
+         not specify its types: T                                                 
+ ------ ------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   src/Controllers/Endpoints/SearchEndpoint.php                        
+ ------ -------------------------------------------------------------------- 
+  :56    Method                                                              
+         DupChallenge\Controllers\Endpoints\SearchEndpoint::handleRequest()  
+         has parameter $request with generic class WP_REST_Request but does  
+         not specify its types: T                                            
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Controllers/Endpoints/StartScanEndpoint.php                        
+ ------ ----------------------------------------------------------------------- 
+  :48    Method                                                                 
+         DupChallenge\Controllers\Endpoints\StartScanEndpoint::handleRequest()  
+         has parameter $request with generic class WP_REST_Request but does     
+         not specify its types: T                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   src/Controllers/Endpoints/TreeViewEndpoint.php                        
+ ------ ---------------------------------------------------------------------- 
+  :71    Method                                                                
+         DupChallenge\Controllers\Endpoints\TreeViewEndpoint::handleRequest()  
+         has parameter $request with generic class WP_REST_Request but does    
+         not specify its types: T                                              
+  :78    Constant DUP_WP_ROOT_PATH not found.                                  
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols   
+ ------ ---------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   src/Controllers/ScanQueueController.php                             
+ ------ -------------------------------------------------------------------- 
+  :24    Property DupChallenge\Controllers\ScanQueueController::$queue with  
+         generic class SplQueue does not specify its types: TValue           
+  :93    Property DupChallenge\Controllers\ScanQueueController::$queue       
+         (SplQueue) does not accept mixed.                                   
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   src/Interfaces/RestEndpointInterface.php                               
+ ------ ----------------------------------------------------------------------- 
+  :34    Method DupChallenge\Interfaces\RestEndpointInterface::handleRequest()  
+         has parameter $request with generic class WP_REST_Request but does     
+         not specify its types: T                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------ 
+  Line   src/Utils/Autoloader.php                                          
+ ------ ------------------------------------------------------------------ 
+  :19    Parameter #1 $callback of function spl_autoload_register expects  
+         (callable(string): void)|null,                                    
+         array{'DupChallenge\\Utils\\Autoloader', 'load'} given.           
+ ------ ------------------------------------------------------------------ 
+
+ [ERROR] Found 39 errors                                                        
+

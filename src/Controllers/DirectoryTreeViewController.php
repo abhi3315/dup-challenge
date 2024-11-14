@@ -128,15 +128,15 @@ class DirectoryTreeViewController
             }
 
             $tree[] = [
-                'id' => $node->id,
-                'name' => $node->name,
-                'path' => $node->path,
-                'type' => $node->type,
-                'nodeCount' => $node->node_count,
-                'parentId' => $node->parent_id,
-                'size' => $node->size,
+                'id'           => $node->id,
+                'name'         => $node->name,
+                'path'         => $node->path,
+                'type'         => $node->type,
+                'nodeCount'    => $node->node_count,
+                'parentId'     => $node->parent_id,
+                'size'         => $node->size,
                 'lastModified' => $node->last_modified,
-                'depth' => $node->depth
+                'depth'        => $node->depth
             ];
         }
 
@@ -223,13 +223,13 @@ class DirectoryTreeViewController
             }
 
             $results[] = [
-                'id' => $node->id,
-                'name' => $node->name,
-                'path' => $node->path,
-                'type' => $node->type,
-                'nodeCount' => $node->node_count,
-                'parentId' => $node->parent_id,
-                'size' => $node->size,
+                'id'           => $node->id,
+                'name'         => $node->name,
+                'path'         => $node->path,
+                'type'         => $node->type,
+                'nodeCount'    => $node->node_count,
+                'parentId'     => $node->parent_id,
+                'size'         => $node->size,
                 'lastModified' => $node->last_modified,
             ];
         }
