@@ -12,9 +12,7 @@ class MainPageView
     public static function renderMainPage()
     {
         ?>
-        <div class="wrap" id="dup-challenge-main-page"></div>
+        <div class="wrap dup-challenge-settings-container" id="dup-challenge-root"></div>
         <?php
-
-        submit_button('Start Scan', 'primary', 'start-scan', false);
     }
 }
