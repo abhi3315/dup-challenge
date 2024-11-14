@@ -236,4 +236,43 @@ class DirectoryTreeViewController
 
         return $results;
     }
+
+	/**
+	 * Search nodes by exact path
+	 * 
+	 * @param string $path The exact path of the node
+	 * 
+	 * @return array<string, mixed> The node object
+	 */
+	public function searchByExactPath($path)
+	{
+		global $wpdb;
+
+		$nodesTable = FileSystemNodesTable::getInstance()->getName();
+
+		$query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " = %s";
+
+		$nodes = $wpdb->get_results($wpdb->prepare($query, $path));
+
+		$results = [];
+
+		foreach ($nodes as $node) {
+			if (!$this->isValidNodeObject($node)) {
+				continue;
+			}
+
+			$results[] = [
+				'id'           => $node->id,
+				'name'         => $node->name,
+				'path'         => $node->path,
+				'type'         => $node->type,
+				'nodeCount'    => $node->node_count,
+				'parentId'     => $node->parent_id,
+				'size'         => $node->size,
+				'lastModified' => $node->last_modified,
+			];
+		}
+
+		return $results;
+	}
 }

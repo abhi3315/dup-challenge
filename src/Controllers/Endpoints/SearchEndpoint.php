@@ -63,8 +63,9 @@ class SearchEndpoint implements RestEndpointInterface
     public function handleRequest(WP_REST_Request $request)
     {
         $query = $request->get_param('query');
+		$exact = $request->get_param('exact');
 
-        $results = $this->search($query);
+        $results = $this->search($query, $exact);
 
         return new WP_REST_Response($results, 200);
     }
@@ -99,11 +100,16 @@ class SearchEndpoint implements RestEndpointInterface
      * Search for files and directories
      *
      * @param string $query The search query
+	 * @param bool $exact Whether to search for exact match or not
      *
      * @return array<string, mixed> The search results
      */
-    private function search($query)
+    private function search($query, $exact)
     {
+		if (isset($exact) && boolval($exact)) {
+			return DirectoryTreeViewController::getInstance()->searchByExactPath($query);
+		}
+
         return DirectoryTreeViewController::getInstance()->searchByPath($query);
     }
 }
