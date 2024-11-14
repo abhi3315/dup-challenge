@@ -49,6 +49,13 @@ class SearchEndpoint implements RestEndpointInterface
                     'default'           => false,
                     'validate_callback' => 'rest_validate_request_arg',
                 ],
+				'limit' => [
+					'required'          => false,
+					'type'              => 'integer',
+					'description'       => __('The maximum number of results to return.', 'dup-challenge'),
+					'default'           => 10,
+					'validate_callback' => 'rest_validate_request_arg',
+				],
             ],
         ]);
     }
@@ -64,8 +71,13 @@ class SearchEndpoint implements RestEndpointInterface
     {
         $query = $request->get_param('query');
 		$exact = $request->get_param('exact');
+		$limit = $request->get_param('limit');
 
-        $results = $this->search($query, $exact);
+		if(!isset($limit) || !is_numeric($limit) || $limit < 1) {
+			$limit = 10;
+		}
+
+        $results = $this->search($query, $exact, $limit);
 
         return new WP_REST_Response($results, 200);
     }
@@ -101,15 +113,18 @@ class SearchEndpoint implements RestEndpointInterface
      *
      * @param string $query The search query
 	 * @param bool $exact Whether to search for exact match or not
+	 * @param int $limit The maximum number of results to return
      *
      * @return array<string, mixed> The search results
      */
-    private function search($query, $exact)
+    private function search($query, $exact, $limit)
     {
 		if (isset($exact) && boolval($exact)) {
-			return DirectoryTreeViewController::getInstance()->searchByExactPath($query);
+			return DirectoryTreeViewController::getInstance()->searchByExactPathOrName($query);
 		}
 
+		// Add support for wildcards
+		$query = '%' . $query . '%';
         return DirectoryTreeViewController::getInstance()->searchByPath($query);
     }
 }

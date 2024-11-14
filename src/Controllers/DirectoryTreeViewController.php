@@ -202,18 +202,19 @@ class DirectoryTreeViewController
      * Search nodes by path
      *
      * @param string $path The path of the node. It may have wildcards
+	 * @param int $limit The limit of the search results
      *
      * @return array<string, mixed> The node object
      */
-    public function searchByPath($path)
+    public function searchByPath($path, $limit = 10)
     {
         global $wpdb;
 
         $nodesTable = FileSystemNodesTable::getInstance()->getName();
 
-        $query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " LIKE %s";
+        $query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " LIKE %s LIMIT %d";
 
-        $nodes = $wpdb->get_results($wpdb->prepare($query, $path));
+        $nodes = $wpdb->get_results($wpdb->prepare($query, $path, $limit));
 
         $results = [];
 
@@ -238,21 +239,21 @@ class DirectoryTreeViewController
     }
 
 	/**
-	 * Search nodes by exact path
+	 * Search nodes by exact path or name
 	 * 
 	 * @param string $path The exact path of the node
 	 * 
 	 * @return array<string, mixed> The node object
 	 */
-	public function searchByExactPath($path)
+	public function searchByExactPathOrName($path)
 	{
 		global $wpdb;
 
 		$nodesTable = FileSystemNodesTable::getInstance()->getName();
 
-		$query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " = %s";
+		$query = "SELECT * FROM $nodesTable WHERE " . FileSystemNodesTable::COLUMN_PATH . " = %s" . " OR " . FileSystemNodesTable::COLUMN_NAME . " = %s";
 
-		$nodes = $wpdb->get_results($wpdb->prepare($query, $path));
+		$nodes = $wpdb->get_results($wpdb->prepare($query, $path, $path));
 
 		$results = [];
 

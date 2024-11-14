@@ -162,10 +162,10 @@ class TreeNode
             'path'          => $this->path,
             'name'          => $this->name,
             'type'          => $this->type,
-            'node_count'    => $this->nodeCount,
+            'nodeCount'    => $this->nodeCount,
             'parent'        => $this->parent ? $this->parent->getId() : null,
             'size'          => $this->size,
-            'last_modified' => $this->lastModified,
+            'lastModified' => $this->lastModified,
             'depth'         => $this->depth,
             'children'      => $children
         ];

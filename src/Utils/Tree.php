@@ -60,10 +60,14 @@ class Tree
     /**
      * Get the tree array
      *
-     * @return array<string, mixed> The tree array
+     * @return array<string, mixed>|null The tree array
      */
     public function toArray()
     {
+		if (!isset($this->root)) {
+			return null;
+		}
+
         return $this->root->toArray();
     }
 }
