@@ -347,7 +347,7 @@ class DirectoryScannerController implements ScannerInterface
     private function cleanup()
     {
         $this->queue->resetState();
-        wp_clear_scheduled_hook(self::EVENT_HOOK);
+        $this->unscheduleProcessScanChunkEvent();
 
         // Truncate tables and return the final status
         $closureTableTruncate = $this->tableController->truncateTable(FileSystemClosureTable::getInstance()->getName());
@@ -364,13 +364,23 @@ class DirectoryScannerController implements ScannerInterface
     private function finalizeScan()
     {
         $this->queue->resetState();
+        $this->unscheduleProcessScanChunkEvent();
         delete_transient(ScanQueueController::TRANSIENT_NAME);
-        wp_clear_scheduled_hook(self::EVENT_HOOK);
 
         // Update the node count and size for directories
         $this->updateDirectoryNodeCountAndSize();
 
         do_action(self::ACTION_SCAN_END);
+    }
+
+    /**
+     * Unschedule the process scan chunk event
+     *
+     * @return void
+     */
+    public function unscheduleProcessScanChunkEvent()
+    {
+        wp_clear_scheduled_hook(self::EVENT_HOOK);
     }
 
     /**

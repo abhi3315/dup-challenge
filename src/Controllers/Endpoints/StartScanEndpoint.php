@@ -32,7 +32,7 @@ class StartScanEndpoint implements RestEndpointInterface
     public function register()
     {
         register_rest_route(self::ENDPOINT_NAMESPACE, $this->route, [
-            'methods' => WP_REST_Server::READABLE,
+            'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'handleRequest'],
             'permission_callback' => [$this, 'permissionCallback']
         ]);

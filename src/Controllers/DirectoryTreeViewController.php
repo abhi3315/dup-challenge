@@ -116,17 +116,7 @@ class DirectoryTreeViewController
      *
      * @param array<object> $nodes The tree nodes
      *
-     * @return array{
-     *    id: int,
-     *    name: string,
-     *    path: string,
-     *    type: string,
-     *    node_count: int,
-     *    parent_id: int,
-     *    size: int,
-     *    last_modified: string,
-     *    depth: int
-     * }[]|array The flat tree nodes structure
+     * @return array<string, mixed> The flat tree nodes structure
      */
     private function buildFlatTree(array $nodes)
     {
@@ -142,10 +132,10 @@ class DirectoryTreeViewController
                 'name' => $node->name,
                 'path' => $node->path,
                 'type' => $node->type,
-                'node_count' => $node->node_count,
-                'parent_id' => $node->parent_id,
+                'nodeCount' => $node->node_count,
+                'parentId' => $node->parent_id,
                 'size' => $node->size,
-                'last_modified' => $node->last_modified,
+                'lastModified' => $node->last_modified,
                 'depth' => $node->depth
             ];
         }
@@ -204,10 +194,8 @@ class DirectoryTreeViewController
             && isset($node->path)
             && isset($node->type)
             && isset($node->node_count)
-            && isset($node->parent_id)
             && isset($node->size)
-            && isset($node->last_modified)
-            && isset($node->depth);
+            && isset($node->last_modified);
     }
 
     /**
@@ -239,11 +227,10 @@ class DirectoryTreeViewController
                 'name' => $node->name,
                 'path' => $node->path,
                 'type' => $node->type,
-                'node_count' => $node->node_count,
-                'parent_id' => $node->parent_id,
+                'nodeCount' => $node->node_count,
+                'parentId' => $node->parent_id,
                 'size' => $node->size,
-                'last_modified' => $node->last_modified,
-                'depth' => $node->depth
+                'lastModified' => $node->last_modified,
             ];
         }
 

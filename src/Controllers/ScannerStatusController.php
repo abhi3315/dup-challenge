@@ -31,9 +31,8 @@ class ScannerStatusController
 
         if (!$status || !is_array($status)) {
             $status = [
-                'started' => false,
+                'status' => 'NOT_STARTED',
                 'startedAt' => 0,
-                'finished' => false,
                 'finishedAt' => 0,
             ];
         }
@@ -51,9 +50,8 @@ class ScannerStatusController
     public function updateStarted()
     {
         update_option(self::OPTION_NAME, [
-            'started' => true,
+            'status' => 'STARTED',
             'startedAt' => time(),
-            'finished' => false,
             'finishedAt' => 0,
             'totalScannedItems' => 0,
         ]);
@@ -69,9 +67,8 @@ class ScannerStatusController
         $currentStatus = $this->getStatus();
 
         update_option(self::OPTION_NAME, [
-            'started' => false,
+            'status' => 'FINISHED',
             'startedAt' => $currentStatus['startedAt'],
-            'finished' => true,
             'finishedAt' => time(),
             'totalScannedItems' => $this->getTotalScannedItems(),
         ]);
