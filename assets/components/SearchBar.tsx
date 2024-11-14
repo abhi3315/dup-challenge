@@ -28,12 +28,20 @@ import EmptyFolderIcon from "@mui/icons-material/FolderOpen";
  */
 import { searchFilesAndFolders } from "../utils";
 
+// SearchBarProps interface
+interface SearchBarProps {
+	setParentId: (parentId: number) => void;
+}
+
 /**
  * Nav Component
  *
+ * @param {Object} props
+ * @param {Function} props.setParentId
+ *
  * @returns {JSX.Element}
  */
-const SearchBar = (): JSX.Element => {
+const SearchBar = ({ setParentId }: SearchBarProps): JSX.Element => {
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [exactMatch, setExactMatch] = useState<boolean>(false);
 
@@ -56,6 +64,9 @@ const SearchBar = (): JSX.Element => {
 				value={searchValue}
 				options={searchQuery.data || []}
 				noOptionsText={__("No results found", "dup-challenge")}
+				onChange={(_, newValue: TreeItem) => {
+					setParentId(newValue?.id);
+				}}
 				getOptionLabel={(option: any) =>
 					typeof option === "string" ? option : option.path
 				}

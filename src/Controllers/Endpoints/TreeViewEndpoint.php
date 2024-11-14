@@ -74,7 +74,7 @@ class TreeViewEndpoint implements RestEndpointInterface
         $depth = $request->get_param('depth');
         $view = $request->get_param('view');
 
-        if ($id === null) {
+        if (empty($id)) {
             $id = DirectoryTreeViewController::getInstance()->getNodeIdByPath(DUP_WP_ROOT_PATH);
         }
 
