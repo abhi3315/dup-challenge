@@ -15,12 +15,12 @@ import DirectoryTree from "../components/DirectoryTree";
  * @returns {JSX.Element}
  */
 const MainPage = (): JSX.Element => {
-	const [parentId, setParentId] = useState<number>(0);
+	const [parent, setParent] = useState<TreeItem|null>(null);
 
 	return (
 		<>
-			<SearchBar setParentId={setParentId} />
-			<DirectoryTree parentId={parentId} />
+			<SearchBar setParent={setParent} />
+			<DirectoryTree parent={parent} />
 		</>
 	);
 };

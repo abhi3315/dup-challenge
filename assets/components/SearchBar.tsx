@@ -30,18 +30,18 @@ import { searchFilesAndFolders } from "../utils";
 
 // SearchBarProps interface
 interface SearchBarProps {
-	setParentId: (parentId: number) => void;
+	setParent: (parent: TreeItem) => void;
 }
 
 /**
  * Nav Component
  *
  * @param {Object} props
- * @param {Function} props.setParentId
+ * @param {Function} props.setParent
  *
  * @returns {JSX.Element}
  */
-const SearchBar = ({ setParentId }: SearchBarProps): JSX.Element => {
+const SearchBar = ({ setParent }: SearchBarProps): JSX.Element => {
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [exactMatch, setExactMatch] = useState<boolean>(false);
 
@@ -65,7 +65,7 @@ const SearchBar = ({ setParentId }: SearchBarProps): JSX.Element => {
 				options={searchQuery.data || []}
 				noOptionsText={__("No results found", "dup-challenge")}
 				onChange={(_, newValue: TreeItem) => {
-					setParentId(newValue?.id);
+					setParent(newValue);
 				}}
 				getOptionLabel={(option: any) =>
 					typeof option === "string" ? option : option.path

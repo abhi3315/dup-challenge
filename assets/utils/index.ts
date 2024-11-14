@@ -95,7 +95,7 @@ export const searchFilesAndFolders = async (
  *
  * @returns {Promise<any>} Tree view data
  */
-export const getTreeViewData = async (parentId: number): Promise<any> => {
+export const getTreeViewData = async (parentId?: number): Promise<any> => {
 	const { data } = await fetch.get(`${restRootUrl}/tree-view`, {
 		params: {
 			id: parentId,

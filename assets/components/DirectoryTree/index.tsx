@@ -50,18 +50,26 @@ const parseTreeItems = (item: TreeItem): RichTreeItem => {
 /**
  * DirectoryTree Component
  */
-const DirectoryTree = ({ parentId }: { parentId: number }) => {
-	const treeViewQuery = useQuery(["treeViewData", parentId], () =>
-		getTreeViewData(parentId)
+const DirectoryTree = ({ parent }: { parent: TreeItem|null }) => {
+	const treeViewQuery = useQuery(["treeViewData", parent?.id], () =>
+		getTreeViewData(parent?.id)
 	);
 
 	if (treeViewQuery.isLoading) {
 		return <CircularProgress />;
 	}
 
-	return treeViewQuery.data ? (
+	let items: RichTreeItem[] = [];
+
+	if (treeViewQuery.data) {
+		items = [parseTreeItems(treeViewQuery.data)];
+	} else if(parent) {
+		items = [parseTreeItems(parent)];
+	}
+
+	return items ? (
 		<RichTreeView
-			items={[parseTreeItems(treeViewQuery.data)]}
+			items={items}
 			slots={{ item: TreeItem }}
 		/>
 	) : (
